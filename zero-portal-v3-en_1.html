@@ -1,0 +1,1542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ZERO Markets — Marketing Portal</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#1a56db;--blue-h:#1240a8;--blue-lt:#ebf2ff;
+  --green:#059669;--green-lt:#d1fae5;
+  --amber:#d97706;--amber-lt:#fef3c7;
+  --red:#dc2626;--red-lt:#fee2e2;
+  --violet:#7c3aed;--violet-lt:#ede9fe;
+  --g50:#f9fafb;--g100:#f3f4f6;--g200:#e5e7eb;--g300:#d1d5db;
+  --g400:#9ca3af;--g500:#6b7280;--g600:#4b5563;--g700:#374151;--g800:#1f2937;--g900:#111827;
+  --sw:224px;--th:52px;
+}
+body{font-family:'Inter',system-ui,sans-serif;background:#f0f2f5;color:var(--g900);font-size:13px;line-height:1.5;min-height:100vh}
+.wrap{display:flex;min-height:100vh}
+/* SIDEBAR */
+.sidebar{width:var(--sw);background:#fff;border-right:1px solid var(--g200);position:fixed;top:0;left:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column;z-index:100;scrollbar-width:thin}
+.sb-logo{padding:0 16px;height:var(--th);display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--g100);flex-shrink:0}
+.sb-nav{flex:1;padding:6px 0;overflow-y:auto}
+/* nav groups */
+.sb-item{display:flex;align-items:center;justify-content:space-between;padding:7px 12px 7px 14px;font-size:13px;cursor:pointer;color:var(--g600);transition:background .12s;user-select:none;border-left:3px solid transparent}
+.sb-item:hover{background:var(--g50);color:var(--g900)}
+.sb-item.sb-active{background:var(--blue-lt);color:var(--blue);border-left-color:var(--blue);font-weight:500}
+.sb-item-l{display:flex;align-items:center;gap:8px;pointer-events:none}
+.sb-ic{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.7;flex-shrink:0;pointer-events:none}
+.sb-chev{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;color:var(--g400);transition:transform .2s;flex-shrink:0;pointer-events:none}
+.sb-chev.open{transform:rotate(180deg)}
+.sb-children{display:none;background:var(--g50)}
+.sb-children.open{display:block}
+.sb-child{display:flex;align-items:center;padding:6px 12px 6px 36px;font-size:12.5px;cursor:pointer;color:var(--g500);transition:background .1s;border-left:3px solid transparent;user-select:none}
+.sb-child:hover{background:var(--g100);color:var(--g800)}
+.sb-child.sb-active{color:var(--blue);background:var(--blue-lt);border-left-color:var(--blue);font-weight:500}
+/* role switcher */
+.role-sw{border-top:1px solid var(--g100);padding:10px 12px;flex-shrink:0}
+.role-sw-lbl{font-size:10px;color:var(--g400);text-transform:uppercase;font-weight:600;letter-spacing:.07em;margin-bottom:5px}
+.role-btns{display:flex;gap:3px;flex-wrap:wrap}
+.rb{flex:1;min-width:38px;padding:5px 4px;font-size:10.5px;font-weight:500;border:1px solid var(--g200);border-radius:5px;cursor:pointer;text-align:center;background:#fff;font-family:'Inter',sans-serif;color:var(--g500);transition:all .12s}
+.rb:hover{background:var(--g50)}
+.rb.rb-active{background:var(--blue);color:#fff;border-color:var(--blue)}
+/* MAIN */
+.main{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;min-height:100vh}
+.topbar{height:var(--th);background:#fff;border-bottom:1px solid var(--g200);display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:50}
+.hamburger{width:20px;height:20px;cursor:pointer;stroke:var(--g500);fill:none;stroke-width:1.8}
+.topbar-r{display:flex;align-items:center;gap:10px}
+.tb-email{font-size:12.5px;color:var(--g500)}
+.tb-avatar{width:32px;height:32px;border-radius:50%;background:var(--blue);color:#fff;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none}
+.content{padding:24px;flex:1}
+/* PAGES */
+.page{display:none}.page.p-active{display:block}
+/* FILTER BAR */
+.fbar{background:#fff;border-radius:6px;padding:14px 16px;margin-bottom:16px;display:flex;align-items:center;flex-wrap:wrap;gap:12px}
+.fg{display:flex;align-items:center;gap:7px}
+.flbl{font-size:12.5px;color:var(--g700);font-weight:500;white-space:nowrap}
+.finp{padding:7px 10px;border:1px solid var(--g300);border-radius:6px;font-size:12.5px;font-family:'Inter',sans-serif;color:var(--g800);outline:none;background:#fff}
+.finp:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,86,219,.08)}
+.fsel{padding:7px 28px 7px 10px;border:1px solid var(--g300);border-radius:6px;font-size:12.5px;font-family:'Inter',sans-serif;color:var(--g800);outline:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7280' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 8px center;-webkit-appearance:none;appearance:none;cursor:pointer}
+.fsel:focus{border-color:var(--blue)}
+.f-actions{display:flex;gap:8px;margin-left:auto}
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:6px;border:1px solid var(--g300);font-size:13px;font-weight:500;cursor:pointer;background:#fff;color:var(--g700);font-family:'Inter',sans-serif;transition:all .12s;white-space:nowrap}
+.btn:hover{background:var(--g50)}
+.btn-primary{background:var(--blue);color:#fff;border-color:var(--blue-h)}
+.btn-primary:hover{background:var(--blue-h)}
+.btn-sm{padding:5px 12px;font-size:12px}
+.btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2}
+/* TABLE AREA */
+.tbl-area{background:#fff;border-radius:6px;overflow:hidden}
+.tab-row{display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid var(--g200)}
+.tabs{display:flex}
+.tab{padding:11px 14px;font-size:12.5px;font-weight:500;cursor:pointer;color:var(--g400);border-bottom:2px solid transparent;transition:color .1s;user-select:none;white-space:nowrap}
+.tab:hover{color:var(--g700)}
+.tab.t-active{color:var(--blue);border-bottom-color:var(--blue)}
+.cbtn{padding:8px 0}
+table{width:100%;border-collapse:collapse}
+thead{background:var(--g50)}
+th{font-size:12px;font-weight:600;color:var(--g500);padding:11px 16px;text-align:left;border-bottom:1px solid var(--g200);white-space:nowrap;user-select:none}
+th.sortable{cursor:pointer}
+th.sortable:hover .sa{opacity:.8}
+.sa{display:inline-flex;flex-direction:column;gap:1px;margin-left:3px;vertical-align:middle;opacity:.35}
+.sa svg{width:7px;height:5px;stroke:currentColor;fill:none;stroke-width:2}
+td{padding:11px 16px;font-size:13px;border-bottom:1px solid var(--g100);color:var(--g700);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafbfe}
+.td-name{font-weight:500;color:var(--g900);max-width:230px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.td-muted{color:var(--g400);font-size:12px}
+/* BADGES */
+.badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
+.b-approved,.b-active{background:var(--green-lt);color:var(--green)}
+.b-pending{background:var(--amber-lt);color:var(--amber)}
+.b-rejected{background:var(--red-lt);color:var(--red)}
+.b-draft{background:var(--g100);color:var(--g500)}
+.b-waiting{background:var(--violet-lt);color:var(--violet)}
+.b-completed{background:#dbeafe;color:#1e40af}
+.dots-btn{background:none;border:none;cursor:pointer;color:var(--g300);font-size:16px;letter-spacing:2px;line-height:1;padding:0 2px;font-family:inherit}
+.dots-btn:hover{color:var(--g700)}
+/* PAGE HEADER */
+.ph{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px}
+.pt{font-size:16px;font-weight:600;color:var(--g900)}
+.ps{font-size:12.5px;color:var(--g400);margin-top:2px}
+/* METRIC CARDS */
+.mc-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.mc{background:#fff;border-radius:6px;padding:14px 16px;border:1px solid var(--g200)}
+.mc-lbl{font-size:10.5px;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px}
+.mc-val{font-size:22px;font-weight:700;color:var(--g900);letter-spacing:-.5px}
+.mc-sub{font-size:11px;color:var(--g400);margin-top:3px}
+/* REGION CARDS */
+.rc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.rc{background:#fff;border-radius:6px;padding:14px 16px;border:1px solid var(--g200);cursor:pointer;transition:border-color .15s,box-shadow .15s}
+.rc:hover{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,86,219,.06)}
+.rc.locked{opacity:.4;cursor:default;pointer-events:none}
+.rc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.rc-name{display:flex;align-items:center;gap:7px;font-size:14px;font-weight:600}
+.rc-budget{font-size:20px;font-weight:700;color:var(--blue);letter-spacing:-.5px;margin-bottom:2px}
+.rc-meta{font-size:11px;color:var(--g400);margin-bottom:8px}
+.prog{height:4px;background:var(--g200);border-radius:2px;overflow:hidden}
+.prog-fill{height:100%;background:var(--blue);border-radius:2px;transition:width .5s}
+.prog-fill.over{background:var(--red)}
+.rc-pct{font-size:11px;color:var(--g400);margin-top:4px}
+/* ALLOC */
+.al-layout{display:grid;grid-template-columns:200px 1fr;gap:16px}
+.al-list{background:#fff;border-radius:6px;border:1px solid var(--g200);overflow:hidden}
+.al-item{padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--g100);display:flex;align-items:center;justify-content:space-between;transition:background .1s}
+.al-item:last-child{border-bottom:none}
+.al-item:hover{background:var(--g50)}
+.al-item.al-active{background:var(--blue-lt)}
+.al-iname{font-size:13px;font-weight:500;color:var(--g700)}
+.al-item.al-active .al-iname{color:var(--blue)}
+.al-iamt{font-size:11.5px;font-weight:600;color:var(--blue)}
+.al-panel{background:#fff;border-radius:6px;border:1px solid var(--g200);padding:18px 20px}
+.al-head{display:flex;align-items:flex-start;justify-content:space-between;padding-bottom:14px;border-bottom:1px solid var(--g100);margin-bottom:16px}
+.al-title{font-size:14px;font-weight:600}
+.al-sub{font-size:12px;color:var(--g400);margin-top:2px}
+.al-chip{background:var(--blue-lt);color:var(--blue);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600}
+.al-tbl{width:100%;border-collapse:collapse}
+.al-tbl th{font-size:10.5px;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.06em;padding:4px 8px 8px;text-align:left}
+.al-tbl td{padding:6px 8px;vertical-align:middle}
+.al-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:7px}
+.al-inp{width:100%;padding:6px 10px;border:1px solid var(--g300);border-radius:6px;font-size:13px;font-family:'Inter',sans-serif;outline:none}
+.al-inp:focus{border-color:var(--blue)}
+.al-bar{display:flex;height:5px;border-radius:3px;overflow:hidden;gap:1px;margin:12px 0}
+.al-seg{height:100%;transition:width .3s}
+.al-foot{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--g50);border-radius:6px}
+.al-foot-t{font-size:12px;color:var(--g500)}
+/* WORKFLOW */
+.wf{max-width:640px}
+.sc{background:#fff;border:1px solid var(--g200);border-radius:6px;margin-bottom:10px;overflow:hidden}
+.sc.sc-active{border-color:var(--blue)}
+.sc.sc-locked{opacity:.4;pointer-events:none}
+.sc-head{padding:12px 16px;display:flex;align-items:center;gap:10px}
+.sc-badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.sb01{background:#dbeafe;color:#1e40af}
+.sb02{background:var(--violet-lt);color:var(--violet)}
+.sb03{background:#ccfbf1;color:#0f766e}
+.sb-done{background:var(--green-lt);color:var(--green)}
+.sb-rev{background:var(--g100);color:var(--g500)}
+.sc-title{font-size:13.5px;font-weight:500;flex:1}
+.sc-check{width:18px;height:18px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sc-check svg{width:10px;height:10px;stroke:#fff;fill:none;stroke-width:2.5}
+.sc-body{padding:4px 16px 16px;border-top:1px solid var(--g100)}
+.connector{text-align:center;padding:4px 0;color:var(--g300);font-size:18px}
+/* CHIPS */
+.chip-row{display:flex;flex-wrap:wrap;gap:8px;padding:12px 0 4px}
+.chip{padding:7px 16px;border-radius:20px;border:1px solid var(--g300);font-size:13px;font-weight:500;cursor:pointer;color:var(--g600);background:#fff;transition:all .12s;user-select:none}
+.chip:hover{border-color:var(--blue);color:var(--blue)}
+.chip.chip-sel{background:var(--blue);color:#fff;border-color:var(--blue)}
+.chip.chip-locked{opacity:.3;pointer-events:none}
+.hint-bar{padding:8px 12px;background:var(--amber-lt);border:1px solid #fcd34d;border-radius:6px;font-size:12px;color:var(--amber);margin-top:8px}
+/* FORM */
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding-top:12px}
+.ffull{grid-column:1/-1}
+.field{display:flex;flex-direction:column;gap:4px}
+.flabel{font-size:11px;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.06em}
+.finput{padding:8px 10px;border:1px solid var(--g300);border-radius:6px;font-size:13px;font-family:'Inter',sans-serif;color:var(--g800);outline:none;background:#fff}
+.finput:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,86,219,.07)}
+.fselect{padding:8px 28px 8px 10px;border:1px solid var(--g300);border-radius:6px;font-size:13px;font-family:'Inter',sans-serif;color:var(--g800);outline:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7280' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 8px center;-webkit-appearance:none;appearance:none;width:100%}
+.fselect:focus{border-color:var(--blue)}
+.type-tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding-top:8px}
+.ttile{padding:10px 12px;border:1px solid var(--g200);border-radius:6px;cursor:pointer;transition:all .12s;background:#fff}
+.ttile:hover{border-color:var(--blue)}
+.ttile.ttile-sel{border-color:var(--blue);background:var(--blue-lt)}
+.tt-name{font-size:12px;font-weight:600;color:var(--g700)}
+.ttile.ttile-sel .tt-name{color:var(--blue)}
+.tt-sub{font-size:10px;color:var(--g400);margin-top:2px;line-height:1.3}
+/* CHANNEL TABLE */
+.chtbl{width:100%;border-collapse:collapse;margin-top:10px}
+.chtbl th{font-size:11px;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.06em;padding:5px 8px;text-align:left;border-bottom:1px solid var(--g100)}
+.chtbl td{padding:5px 8px;vertical-align:middle}
+.chtbl td select,.chtbl td input{width:100%;padding:6px 8px;border:1px solid var(--g300);border-radius:5px;font-size:12.5px;font-family:'Inter',sans-serif;background:#fff;color:var(--g800);outline:none}
+.chtbl td select:focus,.chtbl td input:focus{border-color:var(--blue)}
+.del-btn{background:none;border:none;cursor:pointer;color:var(--g300);font-size:16px;padding:0 3px;transition:color .1s}
+.del-btn:hover{color:var(--red)}
+.add-ch{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500;color:#0f766e;border:1px dashed #5eead4;padding:5px 12px;border-radius:6px;cursor:pointer;background:none;margin-top:8px;font-family:'Inter',sans-serif;transition:background .1s}
+.add-ch:hover{background:#f0fdf4}
+.ch-hint{font-size:11.5px;color:var(--g400);margin-top:5px}
+.sc-foot{display:flex;justify-content:flex-end;gap:8px;padding-top:12px;border-top:1px solid var(--g100);margin-top:12px}
+/* REVIEW */
+.rev-box{background:#fff;border:1.5px solid var(--g800);border-radius:6px;padding:16px 18px;margin-bottom:12px}
+.rev-box h3{font-size:13px;font-weight:600;margin-bottom:12px}
+.rrow{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--g50);font-size:12.5px}
+.rrow:last-child{border-bottom:none}
+.rkey{color:var(--g400)}.rval{font-weight:500}.rval-big{font-size:16px;font-weight:700;color:var(--blue)}
+/* STATUS */
+.sp{background:#fff;border:1px solid #fcd34d;border-radius:6px;padding:20px;text-align:center;margin-bottom:12px}
+.sp-lbl{font-size:15px;font-weight:600;color:var(--amber)}
+.sp-sub{font-size:12px;color:var(--g400);margin-top:4px}
+.outcomes{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.outcome{padding:14px;border-radius:6px;text-align:center}
+.outcome.ok{background:var(--green-lt);border:1px solid #a7f3d0}
+.outcome.nok{background:var(--red-lt);border:1px solid #fca5a5}
+.outcome-lbl{font-size:13px;font-weight:600}
+.outcome.ok .outcome-lbl{color:var(--green)}
+.outcome.nok .outcome-lbl{color:var(--red)}
+.outcome-sub{font-size:11px;color:var(--g400);margin-top:2px}
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:200;display:flex;align-items:center;justify-content:center}
+.modal{background:#fff;border-radius:8px;width:480px;max-width:93vw;padding:20px 22px}
+.modal-title{font-size:15px;font-weight:600;margin-bottom:16px}
+.modal-foot{display:flex;justify-content:flex-end;gap:8px;margin-top:16px;padding-top:14px;border-top:1px solid var(--g100)}
+.mfields{display:flex;flex-direction:column;gap:12px}
+/* PERF */
+.perf-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.perf-c{background:#fff;border-radius:6px;padding:14px 16px;border:1px solid var(--g200)}
+.perf-lbl{font-size:10.5px;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px}
+.perf-val{font-size:20px;font-weight:700;color:var(--g900)}
+.perf-sub{font-size:11px;margin-top:2px}
+.up{color:var(--green)}.dn{color:var(--red)}
+/* DETAIL DRAWER */
+.det-row{background:#fff;border:1px solid var(--g200);border-radius:6px;padding:16px 18px;margin-top:12px}
+.det-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.det-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.det-c{background:var(--g50);border-radius:6px;padding:12px 14px}
+.dc-lbl{font-size:10.5px;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.dc-val{font-size:18px;font-weight:700;letter-spacing:-.3px}
+.dc-sub{font-size:10.5px;color:var(--g400);margin-top:2px}
+/* TAG PICKER */
+.ctag{display:inline-flex;align-items:center;gap:4px;background:var(--blue-lt);color:var(--blue);border:1px solid var(--blue-md);border-radius:20px;padding:2px 10px 2px 10px;font-size:12px;font-weight:500;white-space:nowrap}
+.ctag-x{background:none;border:none;cursor:pointer;color:var(--blue);font-size:14px;line-height:1;padding:0;margin-left:2px;opacity:.7}
+.ctag-x:hover{opacity:1}
+#cname-tag-wrap:focus-within{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,86,219,.07)}
+.csug-item{padding:8px 12px;font-size:13px;cursor:pointer;color:var(--g700);border-bottom:1px solid var(--g100)}
+.csug-item:last-child{border-bottom:none}
+.csug-item:hover{background:var(--blue-lt);color:var(--blue)}
+/* CHANNEL custom input */
+.ch-name-cell{display:flex;align-items:center;gap:4px}
+.ch-custom-inp{width:100%;padding:6px 8px;border:1px solid var(--g300);border-radius:5px;font-size:12.5px;font-family:'Inter',sans-serif;background:#fff;color:var(--g800);outline:none}
+.ch-custom-inp:focus{border-color:var(--blue)}
+/* TOAST */
+.toast{position:fixed;bottom:20px;right:20px;background:var(--g900);color:#fff;padding:9px 16px;border-radius:8px;font-size:13px;z-index:9999;opacity:0;transform:translateY(6px);transition:all .22s;pointer-events:none}
+.toast.show{opacity:1;transform:translateY(0)}
+.empty{text-align:center;padding:48px;color:var(--g400);font-size:13px}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+
+<div class="wrap">
+<!-- ======== SIDEBAR ======== -->
+<aside class="sidebar">
+  <div class="sb-logo">
+    <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" width="36" height="36">
+      <rect width="36" height="36" rx="6" fill="#1a56db"/>
+      <path d="M7 27V10l11 11L29 10v17" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M7 27V10l11 11" stroke="#93c5fd" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+
+  <nav class="sb-nav" id="sb-nav">
+    <!-- My Tasks -->
+    <div class="sb-item" data-group="my-tasks">
+      <div class="sb-item-l"><svg class="sb-ic" viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="11" rx="1.5"/><path d="M5 7h6M5 10h4" stroke-linecap="round"/></svg>My Tasks</div>
+      <svg class="sb-chev" data-chev="my-tasks" viewBox="0 0 16 16"><path d="M4 6l4 4 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="sb-children" id="grp-my-tasks">
+      <div class="sb-child" data-page="my-tasks">All Tasks</div>
+      <div class="sb-child" data-page="my-tasks">Assigned to Me</div>
+    </div>
+
+    <!-- Influencer -->
+    <div class="sb-item" data-group="influencer">
+      <div class="sb-item-l"><svg class="sb-ic" viewBox="0 0 16 16"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6" stroke-linecap="round"/></svg>Influencer Manage...</div>
+      <svg class="sb-chev" data-chev="influencer" viewBox="0 0 16 16"><path d="M4 6l4 4 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="sb-children" id="grp-influencer">
+      <div class="sb-child" data-page="generic">Influencers</div>
+      <div class="sb-child" data-page="generic">Campaigns</div>
+    </div>
+
+    <!-- Campaign Management -->
+    <div class="sb-item sb-active" id="grp-hd-campaign" data-group="campaign">
+      <div class="sb-item-l"><svg class="sb-ic" viewBox="0 0 16 16"><path d="M3 4h10M3 8h10M3 12h7" stroke-linecap="round"/><circle cx="13" cy="12" r="2" fill="currentColor" stroke="none"/></svg>Campaign Manage...</div>
+      <svg class="sb-chev open" data-chev="campaign" viewBox="0 0 16 16"><path d="M4 6l4 4 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="sb-children open" id="grp-campaign">
+      <div class="sb-child sb-active" data-page="campaigns" id="nav-campaigns">Campaigns</div>
+      <div class="sb-child" data-page="payments" id="nav-payments">Campaign Payments</div>
+      <div class="sb-child" data-page="budget-overview" id="nav-budget-overview">Campaign Budget Ov...</div>
+      <div class="sb-child" data-page="performance" id="nav-performance">Campaign Performan...</div>
+      <div class="sb-child" data-page="meta-perf" id="nav-meta-perf">Meta Campaign Perfor...</div>
+    </div>
+
+    <!-- Budget Control -->
+    <div class="sb-item" data-group="budget">
+      <div class="sb-item-l"><svg class="sb-ic" viewBox="0 0 16 16"><circle cx="8" cy="8" r="5.5"/><path d="M8 5v3l2 2" stroke-linecap="round"/></svg>Budget Control</div>
+      <svg class="sb-chev" data-chev="budget" viewBox="0 0 16 16"><path d="M4 6l4 4 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="sb-children" id="grp-budget">
+      <div class="sb-child" data-page="budget-mgmt" id="nav-budget-mgmt">Budget Overview</div>
+      <div class="sb-child" data-page="budget-requests" id="nav-budget-requests">Budget Requests</div>
+    </div>
+
+    <!-- Payment Mgmt -->
+    <div class="sb-item" data-group="payment-mgmt">
+      <div class="sb-item-l"><svg class="sb-ic" viewBox="0 0 16 16"><rect x="1" y="4" width="14" height="9" rx="1.5"/><path d="M1 7h14" stroke-linecap="round"/></svg>Payment Managem...</div>
+      <svg class="sb-chev" data-chev="payment-mgmt" viewBox="0 0 16 16"><path d="M4 6l4 4 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="sb-children" id="grp-payment-mgmt">
+      <div class="sb-child" data-page="generic">Invoices</div>
+      <div class="sb-child" data-page="generic">Payment History</div>
+    </div>
+
+    <!-- Tracking Link -->
+    <div class="sb-item" data-group="tracking">
+      <div class="sb-item-l"><svg class="sb-ic" viewBox="0 0 16 16"><path d="M3 13L8 4l5 9" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 10h6" stroke-linecap="round"/></svg>Tracking Link</div>
+      <svg class="sb-chev" data-chev="tracking" viewBox="0 0 16 16"><path d="M4 6l4 4 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="sb-children" id="grp-tracking">
+      <div class="sb-child" data-page="generic">All Links</div>
+      <div class="sb-child" data-page="generic">Create Link</div>
+    </div>
+
+    <!-- Task Management -->
+    <div class="sb-item" data-group="task-mgmt">
+      <div class="sb-item-l"><svg class="sb-ic" viewBox="0 0 16 16"><rect x="1" y="1" width="14" height="14" rx="2"/><path d="M5 8l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>Task Management</div>
+      <svg class="sb-chev" data-chev="task-mgmt" viewBox="0 0 16 16"><path d="M4 6l4 4 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="sb-children" id="grp-task-mgmt">
+      <div class="sb-child" data-page="generic">Board</div>
+      <div class="sb-child" data-page="generic">My Tasks</div>
+    </div>
+
+    <!-- Reporting -->
+    <div class="sb-item" data-group="reporting">
+      <div class="sb-item-l"><svg class="sb-ic" viewBox="0 0 16 16"><path d="M2 12L5.5 7 8.5 10 12 5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 14h12" stroke-linecap="round"/></svg>Reporting</div>
+      <svg class="sb-chev" data-chev="reporting" viewBox="0 0 16 16"><path d="M4 6l4 4 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="sb-children" id="grp-reporting">
+      <div class="sb-child" data-page="generic">Overview</div>
+      <div class="sb-child" data-page="generic">Channel Reports</div>
+    </div>
+
+    <!-- Ads Library -->
+    <div class="sb-item" data-group="ads">
+      <div class="sb-item-l"><svg class="sb-ic" viewBox="0 0 16 16"><rect x="1" y="3" width="14" height="10" rx="1.5"/><path d="M4 10l3-4 3 3 2-2" stroke-linecap="round" stroke-linejoin="round"/></svg>Ads Library</div>
+      <svg class="sb-chev" data-chev="ads" viewBox="0 0 16 16"><path d="M4 6l4 4 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="sb-children" id="grp-ads">
+      <div class="sb-child" data-page="generic">Creative Assets</div>
+      <div class="sb-child" data-page="generic">Ad Templates</div>
+    </div>
+  </nav>
+
+  <div class="role-sw">
+    <div class="role-sw-lbl">Demo: Switch Role</div>
+    <div class="role-btns">
+      <button class="rb rb-active" id="rb-manager" onclick="switchRole('manager')">Mgr</button>
+      <button class="rb" id="rb-LATAM" onclick="switchRole('LATAM')">LATAM</button>
+      <button class="rb" id="rb-KR" onclick="switchRole('KR')">KR</button>
+      <button class="rb" id="rb-BR" onclick="switchRole('BR')">BR</button>
+    </div>
+  </div>
+</aside>
+
+<!-- ======== MAIN ======== -->
+<div class="main">
+  <div class="topbar">
+    <svg class="hamburger" viewBox="0 0 20 20"><path d="M3 5h14M3 10h14M3 15h14" stroke-linecap="round"/></svg>
+    <div class="topbar-r">
+      <span class="tb-email" id="tb-email">w.nikki@zeromarkets.com</span>
+      <div class="tb-avatar" id="tb-avatar">NW</div>
+    </div>
+  </div>
+
+  <div class="content">
+
+<!-- ===== CAMPAIGNS ===== -->
+<div class="page p-active" id="page-campaigns">
+  <div class="fbar">
+    <div class="fg"><span class="flbl">Campaign Name:</span><input class="finp" id="cf-name" placeholder="Please enter Campaign Name" style="min-width:190px"></div>
+    <div class="fg"><span class="flbl">Owner Name:</span><input class="finp" id="cf-owner" placeholder="Please enter Owner Name" style="min-width:160px"></div>
+    <div class="fg"><span class="flbl">Region:</span>
+      <select class="fsel" id="cf-region" style="min-width:155px">
+        <option value="">Please select Region</option>
+        <option>LATAM</option><option>KR</option><option>BR</option><option>VN</option><option>AU</option><option>NZ</option>
+      </select>
+    </div>
+    <div class="fg"><span class="flbl">Channel:</span>
+      <select class="fsel" id="cf-channel" style="min-width:155px">
+        <option value="">Please select Channel</option>
+        <option>Meta</option><option>Google</option><option>YouTube</option><option>TikTok</option><option>Investing.com</option><option>Rankia</option><option>TradingView</option><option>Reddit</option><option>AdRoll</option>
+      </select>
+    </div>
+    <div class="f-actions">
+      <button class="btn btn-primary" onclick="renderCampaigns()"><svg viewBox="0 0 16 16"><circle cx="7" cy="7" r="4.5"/><path d="M11 11l3 3" stroke-linecap="round"/></svg>Search</button>
+      <button class="btn" onclick="resetCamp()"><svg viewBox="0 0 16 16"><path d="M2 8a6 6 0 1 0 1.5-3.9M2 4v4h4" stroke-linecap="round" stroke-linejoin="round"/></svg>Reset</button>
+    </div>
+  </div>
+  <div class="tbl-area">
+    <div class="tab-row">
+      <div class="tabs" id="camp-tabs">
+        <div class="tab t-active" data-ctab="ACTIVE">ACTIVE</div>
+        <div class="tab" data-ctab="DRAFT">DRAFT</div>
+        <div class="tab" data-ctab="WAITING">WAITING_FOR_APPROVAL</div>
+        <div class="tab" data-ctab="COMPLETED">COMPLETED</div>
+        <div class="tab" data-ctab="REJECTED">REJECTED</div>
+      </div>
+      <div class="cbtn">
+        <button class="btn btn-primary" onclick="openModal()"><svg viewBox="0 0 16 16"><path d="M8 3v10M3 8h10" stroke-linecap="round"/></svg>+ Create Campaign</button>
+      </div>
+    </div>
+    <table>
+      <thead><tr>
+        <th>Campaign Name</th><th>Owner Name</th>
+        <th class="sortable">Priority <span class="sa"><svg viewBox="0 0 8 10"><path d="M4 1v8M1 4l3-3 3 3" stroke="currentColor" fill="none" stroke-linecap="round"/></svg></span></th>
+        <th>Campaign Type</th>
+        <th class="sortable">Amount <span class="sa"><svg viewBox="0 0 8 10"><path d="M4 1v8M1 4l3-3 3 3" stroke="currentColor" fill="none" stroke-linecap="round"/></svg></span></th>
+        <th>Approval Status</th><th>Timeline</th><th>Actions</th>
+      </tr></thead>
+      <tbody id="camp-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ===== PAYMENTS ===== -->
+<div class="page" id="page-payments">
+  <div class="ph"><div><div class="pt">Campaign Payments</div><div class="ps">Track and manage all campaign payment records</div></div></div>
+  <div class="perf-row">
+    <div class="perf-c"><div class="perf-lbl">Total Paid</div><div class="perf-val">$1,204,500</div><div class="perf-sub up">▲ 12% vs last quarter</div></div>
+    <div class="perf-c"><div class="perf-lbl">Pending</div><div class="perf-val">$284,000</div><div class="perf-sub" style="color:var(--amber)">8 invoices awaiting</div></div>
+    <div class="perf-c"><div class="perf-lbl">Overdue</div><div class="perf-val" style="color:var(--red)">$42,000</div><div class="perf-sub dn">▲ 2 overdue invoices</div></div>
+  </div>
+  <div class="fbar" style="margin-bottom:16px">
+    <div class="fg"><span class="flbl">Region:</span><select class="fsel"><option>All Regions</option><option>LATAM</option><option>KR</option><option>BR</option></select></div>
+    <div class="fg"><span class="flbl">Status:</span><select class="fsel"><option>All Status</option><option>Paid</option><option>Pending</option><option>Overdue</option></select></div>
+    <div class="f-actions"><button class="btn btn-primary btn-sm">Search</button><button class="btn btn-sm">Reset</button></div>
+  </div>
+  <div class="tbl-area"><table>
+    <thead><tr><th>Invoice #</th><th>Campaign</th><th>Region</th><th>Channel</th><th>Amount</th><th>Due Date</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody>
+      <tr><td class="td-name">INV-2026-0041</td><td class="td-muted">Welcome Bonus Program</td><td>BR</td><td>Meta</td><td style="font-weight:600">$80,000</td><td class="td-muted">2026/05/15</td><td><span class="badge b-approved">Paid</span></td><td><button class="dots-btn">···</button></td></tr>
+      <tr><td class="td-name">INV-2026-0040</td><td class="td-muted">Korea Brand Q2</td><td>KR</td><td>YouTube</td><td style="font-weight:600">$55,000</td><td class="td-muted">2026/05/20</td><td><span class="badge b-pending">Pending</span></td><td><button class="dots-btn">···</button></td></tr>
+      <tr><td class="td-name">INV-2026-0038</td><td class="td-muted">LATAM Deposit Promo</td><td>LATAM</td><td>TradingView</td><td style="font-weight:600">$40,000</td><td class="td-muted">2026/04/30</td><td><span class="badge b-rejected">Overdue</span></td><td><button class="dots-btn">···</button></td></tr>
+      <tr><td class="td-name">INV-2026-0035</td><td class="td-muted">AU Webinar Push</td><td>AU</td><td>LinkedIn</td><td style="font-weight:600">$20,000</td><td class="td-muted">2026/04/15</td><td><span class="badge b-approved">Paid</span></td><td><button class="dots-btn">···</button></td></tr>
+    </tbody>
+  </table></div>
+</div>
+
+<!-- ===== BUDGET OVERVIEW ===== -->
+<div class="page" id="page-budget-overview">
+  <div class="ph"><div><div class="pt">Campaign Budget Overview — FY 2026</div><div class="ps" id="bo-sub"></div></div></div>
+  <div class="mc-row" id="bo-metrics"></div>
+  <div class="rc-grid" id="bo-grid"></div>
+  <div id="bo-detail"></div>
+</div>
+
+<!-- ===== PERFORMANCE ===== -->
+<div class="page" id="page-performance">
+  <div class="ph"><div><div class="pt">Campaign Performance</div><div class="ps">Cross-channel performance analytics</div></div></div>
+  <div class="perf-row">
+    <div class="perf-c"><div class="perf-lbl">Total Impressions</div><div class="perf-val">12.4M</div><div class="perf-sub up">▲ 8.2% MoM</div></div>
+    <div class="perf-c"><div class="perf-lbl">Total Clicks</div><div class="perf-val">284K</div><div class="perf-sub up">▲ 5.1% MoM</div></div>
+    <div class="perf-c"><div class="perf-lbl">Avg. CTR</div><div class="perf-val">2.29%</div><div class="perf-sub dn">▼ 0.3% MoM</div></div>
+  </div>
+  <div class="tbl-area"><table>
+    <thead><tr><th>Campaign</th><th>Region</th><th>Channel</th><th>Impressions</th><th>Clicks</th><th>CTR</th><th>CPC</th><th>Spend</th></tr></thead>
+    <tbody>
+      <tr><td class="td-name">Welcome Bonus Program</td><td>BR</td><td>Meta</td><td>2,840,000</td><td>68,000</td><td>2.39%</td><td>$1.18</td><td style="font-weight:600">$80,000</td></tr>
+      <tr><td class="td-name">Korea Brand Q2</td><td>KR</td><td>YouTube</td><td>1,920,000</td><td>42,000</td><td>2.19%</td><td>$1.31</td><td style="font-weight:600">$55,000</td></tr>
+      <tr><td class="td-name">AU Webinar Push</td><td>AU</td><td>LinkedIn</td><td>640,000</td><td>18,400</td><td>2.88%</td><td>$1.09</td><td style="font-weight:600">$20,000</td></tr>
+      <tr><td class="td-name">NZ Acquisition Drive</td><td>NZ</td><td>Meta</td><td>520,000</td><td>12,800</td><td>2.46%</td><td>$1.41</td><td style="font-weight:600">$18,000</td></tr>
+    </tbody>
+  </table></div>
+</div>
+
+<!-- ===== META PERF ===== -->
+<div class="page" id="page-meta-perf">
+  <div class="ph"><div><div class="pt">Meta Campaign Performance</div><div class="ps">Facebook & Instagram ad analytics</div></div></div>
+  <div class="perf-row">
+    <div class="perf-c"><div class="perf-lbl">Meta Spend</div><div class="perf-val">$318,000</div><div class="perf-sub up">▲ 14.2% MoM</div></div>
+    <div class="perf-c"><div class="perf-lbl">Reach</div><div class="perf-val">8.4M</div><div class="perf-sub up">▲ 9.1% MoM</div></div>
+    <div class="perf-c"><div class="perf-lbl">ROAS</div><div class="perf-val">3.2x</div><div class="perf-sub up">▲ 0.4x MoM</div></div>
+  </div>
+  <div class="tbl-area"><table>
+    <thead><tr><th>Ad Set</th><th>Region</th><th>Objective</th><th>Reach</th><th>Impressions</th><th>Spend</th><th>CPA</th><th>ROAS</th></tr></thead>
+    <tbody>
+      <tr><td class="td-name">BR Deposit Bonus</td><td>BR</td><td>Conversions</td><td>1,240,000</td><td>2,100,000</td><td style="font-weight:600">$60,000</td><td>$4.20</td><td>3.8x</td></tr>
+      <tr><td class="td-name">LATAM Awareness</td><td>LATAM</td><td>Brand Awareness</td><td>980,000</td><td>1,640,000</td><td style="font-weight:600">$28,000</td><td>$6.10</td><td>2.9x</td></tr>
+      <tr><td class="td-name">NZ Retargeting</td><td>NZ</td><td>Retargeting</td><td>320,000</td><td>580,000</td><td style="font-weight:600">$12,000</td><td>$3.80</td><td>3.5x</td></tr>
+    </tbody>
+  </table></div>
+</div>
+
+<!-- ===== BUDGET MGMT (Annual Overview + Allocation merged) ===== -->
+<div class="page" id="page-budget-mgmt">
+  <!-- inner tab bar -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+    <div>
+      <div class="pt" id="bm-title">Budget Overview — FY 2026</div>
+      <div class="ps" id="bm-sub"><span id="ann-sub"></span></div>
+    </div>
+    <div id="bm-alloc-btn-wrap"></div>
+  </div>
+  <div style="display:flex;gap:0;border-bottom:1px solid var(--g200);margin-bottom:20px">
+    <div class="tab t-active" id="bmt-overview" onclick="switchBmTab('overview')" style="padding:9px 16px;font-size:12.5px;font-weight:500;cursor:pointer;color:var(--blue);border-bottom:2px solid var(--blue);user-select:none">Annual Overview</div>
+    <div class="tab" id="bmt-alloc" onclick="switchBmTab('alloc')" style="padding:9px 16px;font-size:12.5px;font-weight:500;cursor:pointer;color:var(--g400);border-bottom:2px solid transparent;user-select:none">Budget Allocation <span id="alloc-badge" style="margin-left:4px;font-size:9px;background:#ede9fe;color:#7c3aed;padding:1px 5px;border-radius:8px;font-weight:600">CH</span></div>
+  </div>
+
+  <!-- Overview sub-pane -->
+  <div id="bm-pane-overview">
+    <div class="mc-row" id="ann-metrics"></div>
+    <div class="rc-grid" id="ann-grid"></div>
+    <div id="ann-detail"></div>
+  </div>
+
+  <!-- Allocation sub-pane -->
+  <div id="bm-pane-alloc" style="display:none">
+    <div id="alloc-gate" style="display:none;text-align:center;padding:60px 0;color:var(--g400)">This section is accessible to Country Heads and Managers only.</div>
+    <div class="al-layout" id="alloc-main">
+      <div class="al-list" id="al-list"></div>
+      <div id="al-panel"><div class="empty">Select a region</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== BUDGET REQUESTS (Apply + All Requests merged) ===== -->
+<div class="page" id="page-budget-requests">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+    <div>
+      <div class="pt">Budget Requests</div>
+      <div class="ps" id="br-sub">Submit applications and track all requests</div>
+    </div>
+    <button class="btn btn-primary" id="br-apply-btn" onclick="switchBrTab('apply')">
+      <svg viewBox="0 0 16 16" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2"><path d="M8 3v10M3 8h10" stroke-linecap="round"/></svg>
+      + Apply Budget
+    </button>
+  </div>
+
+  <!-- inner tab bar -->
+  <div style="display:flex;gap:0;border-bottom:1px solid var(--g200);margin-bottom:20px">
+    <div class="tab" id="brt-list" onclick="switchBrTab('list')" style="padding:9px 16px;font-size:12.5px;font-weight:500;cursor:pointer;color:var(--g400);border-bottom:2px solid transparent;user-select:none">All Requests <span id="brt-count" style="margin-left:4px;font-size:10px;background:var(--g100);color:var(--g500);padding:1px 6px;border-radius:10px"></span></div>
+    <div class="tab t-active" id="brt-apply" onclick="switchBrTab('apply')" style="padding:9px 16px;font-size:12.5px;font-weight:500;cursor:pointer;color:var(--blue);border-bottom:2px solid var(--blue);user-select:none">Apply Budget</div>
+  </div>
+
+  <!-- All Requests sub-pane -->
+  <div id="br-pane-list" style="display:none">
+    <div class="fbar" style="margin-bottom:16px">
+      <div class="fg"><span class="flbl">Region:</span><select class="fsel" id="rf-region" style="min-width:140px"><option value="">All Regions</option><option>LATAM</option><option>KR</option><option>BR</option><option>VN</option><option>AU</option><option>NZ</option></select></div>
+      <div class="fg"><span class="flbl">Type:</span><select class="fsel" id="rf-type" style="min-width:130px"><option value="">All Types</option><option>Branding</option><option>Promotion</option><option>Offline</option></select></div>
+      <div class="fg"><span class="flbl">Status:</span><select class="fsel" id="rf-status" style="min-width:130px"><option value="">All Status</option><option>Approved</option><option>Pending</option><option>Rejected</option><option>Draft</option></select></div>
+      <div class="f-actions">
+        <button class="btn btn-primary btn-sm" onclick="renderReqs()"><svg viewBox="0 0 16 16" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2"><circle cx="7" cy="7" r="4.5"/><path d="M11 11l3 3" stroke-linecap="round"/></svg>Search</button>
+        <button class="btn btn-sm" onclick="resetReqs()">Reset</button>
+      </div>
+    </div>
+    <div class="tbl-area"><table>
+      <thead><tr><th>Campaign Name</th><th>Region</th><th>Type</th><th>Total Budget</th><th>Channels</th><th>Submitted</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody id="req-tbody"></tbody>
+    </table></div>
+  </div>
+
+  <!-- Apply Budget sub-pane -->
+  <div id="br-pane-apply">
+    <div class="wf">
+
+      <!-- Step 01: Region + Period -->
+      <div class="sc sc-active" id="sc1">
+        <div class="sc-head"><span class="sc-badge sb01">Step 01</span><span class="sc-title">Region &amp; Period</span></div>
+        <div class="sc-body">
+          <div class="fgrid" style="padding-top:14px">
+            <div class="field ffull">
+              <label class="flabel">Market / Region</label>
+              <div class="chip-row" id="apply-chips" style="padding:8px 0 0"></div>
+              <div id="apply-hint" style="margin-top:8px"></div>
+            </div>
+            <div class="field">
+              <label class="flabel">Campaign Start Date</label>
+              <input type="date" class="finput" id="f-start" value="2026-05-01">
+            </div>
+            <div class="field">
+              <label class="flabel">Campaign End Date</label>
+              <input type="date" class="finput" id="f-end" value="2026-05-31">
+            </div>
+            <div class="field ffull">
+              <label class="flabel">Applicant</label>
+              <input type="text" class="finput" id="f-applicant" placeholder="e.g. Nikki W.">
+            </div>
+          </div>
+          <div class="sc-foot">
+            <button class="btn btn-primary btn-sm" onclick="stepNext(1)">Next →</button>
+          </div>
+        </div>
+      </div>
+      <div class="connector">↓</div>
+
+      <!-- Step 02: Budget Purpose -->
+      <div class="sc sc-locked" id="sc2">
+        <div class="sc-head"><span class="sc-badge sb02">Step 02</span><span class="sc-title">Budget Purpose</span></div>
+        <div class="sc-body">
+          <div style="padding-top:14px">
+            <!-- Type tiles -->
+            <div class="field ffull" style="margin-bottom:16px">
+              <label class="flabel">Budget Type</label>
+              <div class="type-tiles" style="margin-top:8px">
+                <div class="ttile ttile-sel" id="tt-branding" onclick="pickType('branding')">
+                  <div class="tt-name">Branding Campaign</div>
+                  <div class="tt-sub">Brand awareness &amp; reach</div>
+                </div>
+                <div class="ttile" id="tt-promotion" onclick="pickType('promotion')">
+                  <div class="tt-name">Promotion Campaign</div>
+                  <div class="tt-sub">Conversion &amp; acquisition</div>
+                </div>
+                <div class="ttile" id="tt-offline" onclick="pickType('offline')">
+                  <div class="tt-name">Offline Event</div>
+                  <div class="tt-sub">Seminars, expos &amp; roadshows</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Campaign multi-select (filtered by type) -->
+            <div class="field ffull" style="margin-bottom:16px">
+              <label class="flabel">Link to Campaigns <span style="font-weight:400;color:var(--g400)">(multi-select)</span></label>
+              <div id="cname-tag-wrap" style="min-height:40px;padding:5px 8px;border:1px solid var(--g300);border-radius:6px;background:#fff;display:flex;flex-wrap:wrap;gap:6px;align-items:center;cursor:text;margin-top:4px" onclick="document.getElementById('cname-inp').focus()">
+                <span id="cname-tags" style="display:flex;flex-wrap:wrap;gap:4px"></span>
+                <input id="cname-inp" type="text" placeholder="Search or type campaign name, press Enter to add…" style="border:none;outline:none;font-size:13px;font-family:'Inter',sans-serif;color:var(--g800);flex:1;min-width:180px;background:transparent;padding:2px 4px" onkeydown="cnameKeydown(event)" oninput="cnameSuggest(this.value)">
+              </div>
+              <div id="cname-suggest" style="display:none;position:absolute;z-index:99;background:#fff;border:1px solid var(--g200);border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,.10);max-height:180px;overflow-y:auto;min-width:300px"></div>
+              <div style="font-size:11px;color:var(--g400);margin-top:5px">Campaign list is filtered by the budget type selected above</div>
+            </div>
+
+            <!-- Requested Budget -->
+            <div class="fgrid" style="padding-top:0;margin-bottom:4px">
+              <div class="field">
+                <label class="flabel">Requested Budget</label>
+                <div style="display:flex;gap:6px">
+                  <input type="number" class="finput" id="f-budget" placeholder="0" oninput="updateApprover()" style="flex:1">
+                  <select class="fselect" id="f-currency" style="width:90px">
+                    <option>USD</option><option>AUD</option><option>BRL</option><option>KRW</option><option>EUR</option>
+                  </select>
+                </div>
+              </div>
+              <div class="field">
+                <label class="flabel">Target KPI</label>
+                <select class="fselect" id="f-kpi">
+                  <option value="">— Select KPI —</option>
+                  <option>Impressions</option>
+                  <option>Clicks / CTR</option>
+                  <option>FTD (First Time Deposit)</option>
+                  <option>Registrations</option>
+                  <option>ROAS</option>
+                  <option>Leads</option>
+                  <option>Attendance (offline)</option>
+                  <option>Brand Awareness Lift</option>
+                </select>
+              </div>
+              <div class="field">
+                <label class="flabel">KPI Target Value</label>
+                <input type="text" class="finput" id="f-kpi-val" placeholder="e.g. 500,000 impressions">
+              </div>
+              <div class="field">
+                <label class="flabel">Approver</label>
+                <div id="f-approver-display" style="padding:8px 10px;border:1px solid var(--g200);border-radius:6px;background:var(--g50);font-size:13px;color:var(--g700);display:flex;align-items:center;gap:8px">
+                  <span id="approver-icon" style="width:24px;height:24px;border-radius:50%;background:var(--blue);color:#fff;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0">—</span>
+                  <span id="approver-name" style="font-weight:500">Enter budget amount to auto-assign</span>
+                </div>
+                <div id="approver-rule" style="font-size:11px;color:var(--g400);margin-top:4px">≤ $10,000 → Amanda (Budget Controller) &nbsp;|&nbsp; &gt; $10,000 → Paddy (Director)</div>
+              </div>
+            </div>
+          </div>
+          <div class="sc-foot">
+            <button class="btn btn-sm" onclick="stepBack(2)">← Back</button>
+            <button class="btn btn-primary btn-sm" onclick="stepNext(2)">Next →</button>
+          </div>
+        </div>
+      </div>
+      <div class="connector">↓</div>
+
+      <!-- Step 03: Channel Allocation -->
+      <div class="sc sc-locked" id="sc3">
+        <div class="sc-head">
+          <span class="sc-badge sb03">Step 03</span>
+          <span class="sc-title">Channel Allocation <span style="margin-left:6px;font-size:9px;background:#ccfbf1;color:#0f766e;padding:2px 7px;border-radius:8px;font-weight:700;letter-spacing:.06em">KEY</span></span>
+        </div>
+        <div class="sc-body">
+          <div id="ch-budget-bar" style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--g50);border-radius:6px;margin-bottom:12px;font-size:12px">
+            <span style="color:var(--g500)">Total Requested</span>
+            <span id="ch-total-label" style="font-weight:700;color:var(--blue);font-size:14px">—</span>
+            <span style="color:var(--g400)">|</span>
+            <span style="color:var(--g500)">Allocated</span>
+            <span id="ch-allocated-label" style="font-weight:600;color:var(--g800)">$0</span>
+            <span style="color:var(--g400)">|</span>
+            <span style="color:var(--g500)">Remaining</span>
+            <span id="ch-remaining-label" style="font-weight:600;color:var(--green)">—</span>
+          </div>
+          <table class="chtbl" id="ch-tbl">
+            <thead><tr><th>Channel</th><th>Budget Amount</th><th>Currency</th><th>% of Total</th><th></th></tr></thead>
+            <tbody id="ch-tbody"></tbody>
+          </table>
+          <div style="font-size:11px;color:var(--g400);margin-top:6px">Preset channels: Meta · Google · YouTube · TikTok · Investing.com · Rankia · TradingView · Reddit · AdRoll · LinkedIn · X · or type a custom channel name</div>
+          <button class="add-ch" onclick="addCh()">+ Add Channel</button>
+          <div class="ch-hint" id="ch-hint"></div>
+          <div class="sc-foot">
+            <button class="btn btn-sm" onclick="stepBack(3)">← Back</button>
+            <button class="btn btn-primary btn-sm" onclick="stepNext(3)">Review →</button>
+          </div>
+        </div>
+      </div>
+      <div class="connector">↓</div>
+
+      <!-- Step 04: Review -->
+      <div class="sc sc-locked" id="sc4">
+        <div class="sc-head"><span class="sc-badge sb-rev">Review</span><span class="sc-title">Review &amp; Submit</span></div>
+        <div class="sc-body">
+          <div id="rev-content" style="padding-top:8px"><div class="empty" style="padding:20px">Complete steps above to review</div></div>
+          <div id="rev-foot" style="display:none">
+            <div class="sc-foot">
+              <button class="btn btn-sm" onclick="stepBack(4)">← Back</button>
+              <button class="btn btn-primary" onclick="doSubmit()">Submit Application</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="connector">↓</div>
+
+      <!-- Status -->
+      <div id="status-panel" style="display:none">
+        <div class="sp"><div class="sp-lbl">Status: Pending Approval</div><div class="sp-sub" id="sp-sub-text">Submitted — awaiting approval</div></div>
+        <div class="outcomes">
+          <div class="outcome ok"><div class="outcome-lbl">Approved</div><div class="outcome-sub">Budget activated &amp; linked to campaign</div></div>
+          <div class="outcome nok"><div class="outcome-lbl">Rejected</div><div class="outcome-sub">Returned with feedback to region</div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ===== GENERIC ===== -->
+<div class="page" id="page-generic"><div class="empty" style="padding:80px">This module is under construction.</div></div>
+<div class="page" id="page-my-tasks"><div class="ph"><div><div class="pt">My Tasks</div></div></div><div class="empty">No tasks assigned.</div></div>
+
+  </div>
+</div>
+</div>
+
+<!-- CREATE MODAL -->
+<div class="modal-bg" id="create-modal" style="display:none" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-title">Create Campaign</div>
+    <div class="mfields">
+      <div class="field"><label class="flabel">Campaign Name</label><input class="finput" id="m-name" placeholder="e.g. Welcome Bonus Q2 — BR"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="field"><label class="flabel">Region</label><select class="fselect" id="m-region"><option>LATAM</option><option>KR</option><option>BR</option><option>VN</option><option>AU</option><option>NZ</option></select></div>
+        <div class="field"><label class="flabel">Type</label><select class="fselect" id="m-type"><option>PROMOTION</option><option>BRANDING</option><option>OFFLINE</option></select></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="field"><label class="flabel">Start Date</label><input type="date" class="finput" id="m-start" value="2026-05-01"></div>
+        <div class="field"><label class="flabel">End Date</label><input type="date" class="finput" id="m-end" value="2026-12-31"></div>
+      </div>
+      <div class="field"><label class="flabel">Owner Name</label><input class="finput" id="m-owner" placeholder="e.g. Carlos M."></div>
+      <div class="field"><label class="flabel">Priority</label><select class="fselect" id="m-priority"><option value="">—</option><option>High</option><option>Medium</option><option>Low</option></select></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-sm" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary btn-sm" onclick="createCampaign()">Create Campaign</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────
+var REGIONS=[
+  {id:'LATAM',name:'LATAM',budget:500000,used:182000,flag:'🌎',head:'Carlos M.'},
+  {id:'KR',name:'Korea',budget:600000,used:225000,flag:'🇰🇷',head:'Ji-hoon K.'},
+  {id:'BR',name:'Brazil',budget:1000000,used:344000,flag:'🇧🇷',head:'Rafael S.'},
+  {id:'VN',name:'Vietnam',budget:300000,used:82000,flag:'🇻🇳',head:'Linh N.'},
+  {id:'AU',name:'Australia',budget:400000,used:124000,flag:'🇦🇺',head:'Paddy T.'},
+  {id:'NZ',name:'New Zealand',budget:200000,used:61000,flag:'🇳🇿',head:'Sarah B.'}
+];
+var ALLOC_CATS=[
+  {key:'branding',label:'Branding',color:'#1a56db'},
+  {key:'promotion',label:'Promotion',color:'#059669'},
+  {key:'offline',label:'Offline Events',color:'#d97706'}
+];
+var allocData={};
+REGIONS.forEach(function(r){
+  allocData[r.id]={branding:Math.round(r.budget*.35),promotion:Math.round(r.budget*.45),offline:Math.round(r.budget*.2)};
+});
+var CHANNELS=['Meta','Google','YouTube','TikTok','Investing.com','Rankia','TradingView','Reddit','AdRoll','LinkedIn','X (Twitter)'];
+var chRows=[{ch:'Meta',amt:30000,cur:'USD'},{ch:'Google',amt:20000,cur:'USD'}];
+var appRegion=null;
+var appType='branding';
+var campTabFilter='ACTIVE';
+var CAMPAIGNS=[
+  {name:'BA 3 Months Free Campaign',owner:'',region:'BR',priority:'',type:'PROMOTION',amount:0,status:'Approved',start:'2026/04/29',end:'2027/04/30'},
+  {name:'WELCOME BONUS PROGRAM',owner:'',region:'KR',priority:'',type:'PROMOTION',amount:0,status:'Approved',start:'2025/08/07',end:'2026/12/31'},
+  {name:'WELCOME BONUS PROGRAM',owner:'',region:'LATAM',priority:'',type:'PROMOTION',amount:0,status:'Approved',start:'2025/08/06',end:'2026/12/31'},
+  {name:'WELCOME BONUS PROGRAM',owner:'',region:'VN',priority:'',type:'PROMOTION',amount:0,status:'Approved',start:'2025/08/06',end:'2026/12/31'},
+  {name:'Test - LT Portal - Deposit for 10...',owner:'',region:'NZ',priority:'',type:'PROMOTION',amount:0,status:'Approved',start:'2026/01/12',end:'2027/01/19'},
+  {name:'Test - MN Portal - Deposit for 1...',owner:'',region:'LATAM',priority:'',type:'PROMOTION',amount:0,status:'Approved',start:'2026/01/12',end:'2027/01/19'},
+  {name:'Test - BR APP - Deposit for 100...',owner:'',region:'BR',priority:'',type:'PROMOTION',amount:0,status:'Approved',start:'2026/01/12',end:'2027/01/19'},
+  {name:'Test - BR Portal - Deposit for 10...',owner:'',region:'BR',priority:'',type:'PROMOTION',amount:0,status:'Approved',start:'2026/01/12',end:'2027/01/19'},
+  {name:'LT Portal - Deposit for 100% Bon...',owner:'',region:'LATAM',priority:'',type:'PROMOTION',amount:0,status:'Approved',start:'2026/01/23',end:'2027/01/01'},
+  {name:'MN Portal - Deposit for 100% Bo...',owner:'',region:'KR',priority:'',type:'PROMOTION',amount:0,status:'Approved',start:'2026/01/23',end:'2027/01/01'},
+  {name:'Korea Brand Q2 Awareness',owner:'Ji-hoon K.',region:'KR',priority:'High',type:'BRANDING',amount:55000,status:'Waiting',start:'2026/05/01',end:'2026/07/31'},
+  {name:'LATAM Deposit Promo May',owner:'Carlos M.',region:'LATAM',priority:'Medium',type:'PROMOTION',amount:40000,status:'Waiting',start:'2026/05/01',end:'2026/05/31'},
+  {name:'VN Seminar Series',owner:'Linh N.',region:'VN',priority:'',type:'OFFLINE',amount:15000,status:'Draft',start:'2026/06/01',end:'2026/06/30'},
+  {name:'AU Webinar Push',owner:'Paddy T.',region:'AU',priority:'High',type:'BRANDING',amount:20000,status:'Completed',start:'2026/03/01',end:'2026/03/31'},
+  {name:'NZ Acquisition Drive',owner:'Sarah B.',region:'NZ',priority:'Low',type:'PROMOTION',amount:18000,status:'Rejected',start:'2026/04/01',end:'2026/04/30'},
+];
+var REQUESTS=[
+  {name:'WELCOME BONUS PROGRAM',region:'BR',type:'Promotion',total:80000,channels:'Meta, Google',date:'2026/04/10',status:'Approved'},
+  {name:'Korea Brand Awareness Q2',region:'KR',type:'Branding',total:55000,channels:'YouTube, TikTok',date:'2026/04/18',status:'Approved'},
+  {name:'LATAM Deposit Promo May',region:'LATAM',type:'Promotion',total:40000,channels:'Meta, TradingView',date:'2026/04/25',status:'Pending'},
+  {name:'VN Seminar Series',region:'VN',type:'Offline',total:15000,channels:'—',date:'2026/04/28',status:'Pending'},
+  {name:'AU Webinar Push',region:'AU',type:'Branding',total:20000,channels:'LinkedIn, Google',date:'2026/03/30',status:'Approved'},
+  {name:'NZ Acquisition Drive',region:'NZ',type:'Promotion',total:18000,channels:'Meta, Reddit',date:'2026/04/02',status:'Rejected'},
+];
+
+// ── ROLE ──────────────────────────────────────────────────────────────
+var ROLES={
+  manager:{name:'Nikki W.',email:'w.nikki@zeromarkets.com',ini:'NW',region:null},
+  LATAM:{name:'Carlos M.',email:'carlos@zeromarkets.com',ini:'CM',region:'LATAM'},
+  KR:{name:'Ji-hoon K.',email:'jihoon@zeromarkets.com',ini:'JK',region:'KR'},
+  BR:{name:'Rafael S.',email:'rafael@zeromarkets.com',ini:'RS',region:'BR'},
+};
+var currentRole='manager';
+function isManager(){return currentRole==='manager';}
+function myRegion(){return ROLES[currentRole]?ROLES[currentRole].region:null;}
+function canSee(rid){return isManager()||myRegion()===rid;}
+
+function switchRole(r){
+  currentRole=r;
+  document.querySelectorAll('.rb').forEach(function(b){b.classList.remove('rb-active');});
+  var rb=document.getElementById('rb-'+r);
+  if(rb)rb.classList.add('rb-active');
+  var u=ROLES[r]||{name:r,email:r+'@zeromarkets.com',ini:r.slice(0,2),region:r};
+  document.getElementById('tb-email').textContent=u.email;
+  document.getElementById('tb-avatar').textContent=u.ini;
+  // lock/hide alloc for non-managers
+  refreshCurrent();
+  showToast('Switched to '+u.name);
+}
+
+// ── NAVIGATION ────────────────────────────────────────────────────────
+var currentPageId='campaigns';
+
+// sidebar event delegation
+document.getElementById('sb-nav').addEventListener('click', function(e){
+  var target=e.target;
+  // find closest sb-item or sb-child
+  var item=target.closest('.sb-item');
+  var child=target.closest('.sb-child');
+
+  if(child){
+    var pg=child.getAttribute('data-page');
+    if(pg) goPage(pg, child);
+    return;
+  }
+  if(item){
+    var grp=item.getAttribute('data-group');
+    if(grp) toggleGrp(grp, item);
+  }
+});
+
+// campaign tab delegation
+document.getElementById('camp-tabs').addEventListener('click', function(e){
+  var tab=e.target.closest('.tab');
+  if(!tab) return;
+  campTabFilter=tab.getAttribute('data-ctab');
+  document.querySelectorAll('#camp-tabs .tab').forEach(function(t){t.classList.remove('t-active');});
+  tab.classList.add('t-active');
+  renderCampaigns();
+});
+
+function toggleGrp(grpId, itemEl){
+  var grpEl=document.getElementById('grp-'+grpId);
+  var chevEl=document.querySelector('[data-chev="'+grpId+'"]');
+  if(!grpEl) return;
+  var isOpen=grpEl.classList.contains('open');
+  grpEl.classList.toggle('open', !isOpen);
+  if(chevEl) chevEl.classList.toggle('open', !isOpen);
+}
+
+function goPage(pgId, childEl){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('p-active');});
+  document.querySelectorAll('.sb-child').forEach(function(c){c.classList.remove('sb-active');});
+  var pg=document.getElementById('page-'+pgId);
+  if(pg) pg.classList.add('p-active');
+  if(childEl) childEl.classList.add('sb-active');
+  else {
+    // try to find by data-page
+    var found=document.querySelector('.sb-child[data-page="'+pgId+'"]');
+    if(found) found.classList.add('sb-active');
+  }
+  currentPageId=pgId;
+  refreshCurrent();
+}
+
+function refreshCurrent(){
+  if(currentPageId==='campaigns') renderCampaigns();
+  else if(currentPageId==='budget-overview') renderOverview('bo');
+  else if(currentPageId==='budget-mgmt') renderBudgetMgmt();
+  else if(currentPageId==='budget-requests') renderBudgetRequests();
+}
+
+// ── HELPERS ───────────────────────────────────────────────────────────
+function fmt(n){return n>=1e6?'$'+(n/1e6).toFixed(1)+'M':n>=1000?'$'+(n/1000).toFixed(0)+'K':'$'+n;}
+function fmtF(n){return n?'$'+n.toLocaleString():'—';}
+function badge(s){
+  var m={approved:'b-approved',active:'b-active',draft:'b-draft',waiting:'b-waiting',pending:'b-pending',rejected:'b-rejected',completed:'b-completed'};
+  var cls=m[s.toLowerCase()]||'b-draft';
+  return '<span class="badge '+cls+'">'+s+'</span>';
+}
+function showToast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},2200);
+}
+
+// ── CAMPAIGNS ─────────────────────────────────────────────────────────
+function renderCampaigns(){
+  var nameF=(document.getElementById('cf-name').value||'').toLowerCase();
+  var ownerF=(document.getElementById('cf-owner').value||'').toLowerCase();
+  var regionF=document.getElementById('cf-region');
+  if(!isManager()){regionF.value=myRegion();regionF.disabled=true;}
+  else regionF.disabled=false;
+  var rF=regionF.value;
+  var statusMap={ACTIVE:'approved',DRAFT:'draft',WAITING:'waiting',COMPLETED:'completed',REJECTED:'rejected'};
+  var stKey=statusMap[campTabFilter]||'approved';
+  var data=CAMPAIGNS.filter(function(c){
+    if(!canSee(c.region)) return false;
+    if(nameF&&c.name.toLowerCase().indexOf(nameF)<0) return false;
+    if(ownerF&&c.owner.toLowerCase().indexOf(ownerF)<0) return false;
+    if(rF&&c.region!==rF) return false;
+    return c.status.toLowerCase()===stKey||(campTabFilter==='WAITING'&&c.status.toLowerCase().indexOf('wait')>=0);
+  });
+  var tbody=document.getElementById('camp-tbody');
+  tbody.innerHTML=data.length?data.map(function(c){
+    var prioColor=c.priority==='High'?'var(--red)':c.priority==='Medium'?'var(--amber)':'var(--g400)';
+    return '<tr>'
+      +'<td class="td-name" title="'+c.name+'">'+c.name+'</td>'
+      +'<td>'+(c.owner||'<span class="td-muted">—</span>')+'</td>'
+      +'<td>'+(c.priority?'<span style="font-size:12px;font-weight:500;color:'+prioColor+'">'+c.priority+'</span>':'<span class="td-muted">—</span>')+'</td>'
+      +'<td><span style="font-size:12px">'+c.type+'</span></td>'
+      +'<td style="font-weight:'+(c.amount?'600':'400')+'">'+(c.amount?fmtF(c.amount):'0')+'</td>'
+      +'<td>'+badge(c.status)+'</td>'
+      +'<td class="td-muted">'+c.start+' – '+c.end+'</td>'
+      +'<td><button class="dots-btn">···</button></td>'
+      +'</tr>';
+  }).join(''):'<tr><td colspan="8" class="empty">No campaigns match this filter</td></tr>';
+}
+function resetCamp(){
+  document.getElementById('cf-name').value='';
+  document.getElementById('cf-owner').value='';
+  document.getElementById('cf-region').value='';
+  document.getElementById('cf-channel').value='';
+  renderCampaigns();
+}
+
+// ── OVERVIEW ──────────────────────────────────────────────────────────
+function renderOverview(pfx){
+  var vis=REGIONS.filter(function(r){return canSee(r.id);});
+  var tb=vis.reduce(function(s,r){return s+r.budget;},0);
+  var tu=vis.reduce(function(s,r){return s+r.used;},0);
+  var sub=document.getElementById(pfx+'-sub');
+  var mc=document.getElementById(pfx+'-metrics');
+  var grid=document.getElementById(pfx+'-grid');
+  if(!sub||!mc||!grid) return;
+  sub.textContent=(isManager()?'All regions':'Region: '+myRegion())+' · Total '+fmt(tb)+' USD';
+  mc.innerHTML='<div class="mc"><div class="mc-lbl">Annual Budget</div><div class="mc-val">'+fmt(tb)+'</div><div class="mc-sub">FY 2026 total</div></div>'
+    +'<div class="mc"><div class="mc-lbl">Spent to Date</div><div class="mc-val">'+fmt(tu)+'</div><div class="mc-sub">'+Math.round(tu/tb*100)+'% utilised</div></div>'
+    +'<div class="mc"><div class="mc-lbl">Remaining</div><div class="mc-val" style="color:var(--green)">'+fmt(tb-tu)+'</div><div class="mc-sub">Available</div></div>'
+    +'<div class="mc"><div class="mc-lbl">Regions</div><div class="mc-val">'+vis.length+'</div><div class="mc-sub">'+(isManager()?'Global access':'Your region')+'</div></div>';
+  grid.innerHTML='';
+  REGIONS.forEach(function(r){
+    var can=canSee(r.id);
+    var pct=Math.round(r.used/r.budget*100);
+    var card=document.createElement('div');
+    card.className='rc'+(can?'':' locked');
+    card.innerHTML='<div class="rc-top"><div class="rc-name"><span>'+r.flag+'</span>'+r.name+'</div>'+(can?'<span style="font-size:11px;color:var(--g400)">'+pct+'% used</span>':'<span style="font-size:13px;color:var(--g300)">🔒</span>')+'</div>'
+      +'<div class="rc-budget">'+fmt(r.budget)+'</div>'
+      +'<div class="rc-meta">Head: '+r.head+' · Remaining: '+fmt(r.budget-r.used)+'</div>'
+      +'<div class="prog"><div class="prog-fill'+(pct>90?' over':'')+'" style="width:'+pct+'%"></div></div>'
+      +'<div class="rc-pct">'+pct+'% of '+fmt(r.budget)+' utilised</div>';
+    if(can){
+      (function(region, prefix){
+        card.onclick=function(){showOvDetail(region, prefix);};
+      })(r, pfx);
+    }
+    grid.appendChild(card);
+  });
+}
+function showOvDetail(r, pfx){
+  var al=allocData[r.id];
+  var total=r.budget;
+  var det=document.getElementById(pfx+'-detail');
+  if(!det) return;
+  det.innerHTML='<div class="det-row">'
+    +'<div class="det-head">'
+    +'<span style="font-size:14px;font-weight:600">'+r.flag+' '+r.name+' — Budget Breakdown</span>'
+    +(isManager()?'<button class="btn btn-sm btn-primary" onclick="gotoAllocRegion(\''+r.id+'\')">Edit Allocation →</button>':'')
+    +'</div>'
+    +'<div class="det-cards">'
+    +ALLOC_CATS.map(function(c){return '<div class="det-c"><div class="dc-lbl">'+c.label+'</div><div class="dc-val" style="color:'+c.color+'">'+fmt(al[c.key])+'</div><div class="dc-sub">'+Math.round(al[c.key]/total*100)+'% of annual</div></div>';}).join('')
+    +'</div></div>';
+}
+function gotoAllocRegion(id){
+  var grp=document.getElementById('grp-budget');
+  var chev=document.querySelector('[data-chev="budget"]');
+  grp.classList.add('open'); if(chev) chev.classList.add('open');
+  goPage('budget-mgmt', document.getElementById('nav-budget-mgmt'));
+  setTimeout(function(){switchBmTab('alloc');selectAllocRegion(id);}, 80);
+}
+
+// ── BUDGET MGMT PAGE (Overview + Allocation tabs) ──────────────────────
+var bmCurrentTab='overview';
+function renderBudgetMgmt(){
+  // show/hide alloc tab based on role
+  var allocTab=document.getElementById('bmt-alloc');
+  if(allocTab) allocTab.style.display=isManager()?'block':'none';
+  switchBmTab(bmCurrentTab==='alloc'&&!isManager()?'overview':bmCurrentTab);
+}
+function switchBmTab(tab){
+  bmCurrentTab=tab;
+  var ov=document.getElementById('bmt-overview');
+  var al=document.getElementById('bmt-alloc');
+  var ovPane=document.getElementById('bm-pane-overview');
+  var alPane=document.getElementById('bm-pane-alloc');
+  if(!ov||!al||!ovPane||!alPane) return;
+  var activeStyle='color:var(--blue);border-bottom:2px solid var(--blue)';
+  var inactiveStyle='color:var(--g400);border-bottom:2px solid transparent';
+  if(tab==='overview'){
+    ov.style.cssText=ov.style.cssText.replace(/color:[^;]+/,'color:var(--blue)');
+    ov.style.borderBottom='2px solid var(--blue)';
+    ov.style.color='var(--blue)';
+    al.style.color='var(--g400)'; al.style.borderBottom='2px solid transparent';
+    ovPane.style.display='block'; alPane.style.display='none';
+    renderOverview('ann');
+  } else {
+    al.style.color='var(--blue)'; al.style.borderBottom='2px solid var(--blue)';
+    ov.style.color='var(--g400)'; ov.style.borderBottom='2px solid transparent';
+    ovPane.style.display='none'; alPane.style.display='block';
+    renderAlloc();
+  }
+}
+
+// ── BUDGET REQUESTS PAGE (All Requests + Apply tabs) ───────────────────
+var brCurrentTab='apply';
+function renderBudgetRequests(){
+  switchBrTab(brCurrentTab);
+}
+function switchBrTab(tab){
+  brCurrentTab=tab;
+  var lt=document.getElementById('brt-list');
+  var at=document.getElementById('brt-apply');
+  var lp=document.getElementById('br-pane-list');
+  var ap=document.getElementById('br-pane-apply');
+  var applyBtn=document.getElementById('br-apply-btn');
+  if(!lt||!at||!lp||!ap) return;
+  if(tab==='list'){
+    lt.style.color='var(--blue)'; lt.style.borderBottom='2px solid var(--blue)';
+    at.style.color='var(--g400)'; at.style.borderBottom='2px solid transparent';
+    lp.style.display='block'; ap.style.display='none';
+    if(applyBtn) applyBtn.style.display='inline-flex';
+    renderReqs();
+  } else {
+    at.style.color='var(--blue)'; at.style.borderBottom='2px solid var(--blue)';
+    lt.style.color='var(--g400)'; lt.style.borderBottom='2px solid transparent';
+    lp.style.display='none'; ap.style.display='block';
+    if(applyBtn) applyBtn.style.display='none';
+    renderApply();
+  }
+  // update count badge
+  var cnt=document.getElementById('brt-count');
+  if(cnt) cnt.textContent=REQUESTS.filter(function(r){return canSee(r.region);}).length;
+}
+
+// ── ALLOCATION ────────────────────────────────────────────────────────
+function renderAlloc(){
+  var gate=document.getElementById('alloc-gate');
+  var main=document.getElementById('alloc-main');
+  if(!isManager()){gate.style.display='block';main.style.display='none';return;}
+  gate.style.display='none'; main.style.display='grid';
+  var list=document.getElementById('al-list');
+  list.innerHTML='';
+  REGIONS.forEach(function(r,i){
+    var div=document.createElement('div');
+    div.className='al-item'+(i===0?' al-active':'');
+    div.id='ali-'+r.id;
+    div.innerHTML='<span class="al-iname">'+r.flag+' '+r.name+'</span><span class="al-iamt">'+fmt(r.budget)+'</span>';
+    (function(rid){div.onclick=function(){selectAllocRegion(rid);};})(r.id);
+    list.appendChild(div);
+  });
+  selectAllocRegion(REGIONS[0].id);
+}
+function selectAllocRegion(id){
+  document.querySelectorAll('.al-item').forEach(function(e){e.classList.remove('al-active');});
+  var el=document.getElementById('ali-'+id);
+  if(el) el.classList.add('al-active');
+  renderAllocPanel(id);
+}
+function renderAllocPanel(id){
+  var r=REGIONS.filter(function(x){return x.id===id;})[0];
+  var al=allocData[id];
+  var total=r.budget;
+  var used=ALLOC_CATS.reduce(function(s,c){return s+al[c.key];},0);
+  var rem=total-used;
+  document.getElementById('al-panel').innerHTML='<div class="al-panel">'
+    +'<div class="al-head"><div><div class="al-title">'+r.flag+' '+r.name+' — Allocation</div><div class="al-sub">Country Head: '+r.head+'</div></div><span class="al-chip">Annual: '+fmtF(total)+'</span></div>'
+    +'<table class="al-tbl"><thead><tr><th>Category</th><th>Amount (USD)</th><th>% of Annual</th></tr></thead><tbody>'
+    +ALLOC_CATS.map(function(c){return '<tr><td><span class="al-dot" style="background:'+c.color+'"></span>'+c.label+'</td>'
+      +'<td><input class="al-inp" type="number" id="ai-'+id+'-'+c.key+'" value="'+al[c.key]+'" oninput="liveAlloc(\''+id+'\',\''+c.key+'\',this.value)"></td>'
+      +'<td style="font-size:12px;color:var(--g400);text-align:right" id="ap-'+id+'-'+c.key+'">'+Math.round(al[c.key]/total*100)+'%</td>'
+      +'</tr>';}).join('')
+    +'</tbody></table>'
+    +'<div class="al-bar" id="abar-'+id+'">'
+    +ALLOC_CATS.map(function(c){return '<div class="al-seg" style="width:'+Math.round(al[c.key]/total*100)+'%;background:'+c.color+'"></div>';}).join('')
+    +(rem>0?'<div class="al-seg" style="width:'+Math.round(rem/total*100)+'%;background:var(--g200)"></div>':'')
+    +'</div>'
+    +'<div class="al-foot"><span class="al-foot-t">Allocated: <strong id="af-used-'+id+'">'+fmtF(used)+'</strong> · Unallocated: <strong id="af-rem-'+id+'" style="color:'+(rem<0?'var(--red)':'inherit')+'">'+fmtF(rem)+'</strong></span>'
+    +'<button class="btn btn-primary btn-sm" onclick="saveAlloc(\''+id+'\',this)">Save Changes</button></div>'
+    +'</div>';
+}
+function liveAlloc(id,key,val){
+  allocData[id][key]=parseInt(val)||0;
+  var r=REGIONS.filter(function(x){return x.id===id;})[0];
+  var al=allocData[id];
+  var total=r.budget;
+  var used=ALLOC_CATS.reduce(function(s,c){return s+al[c.key];},0);
+  var rem=total-used;
+  ALLOC_CATS.forEach(function(c){
+    var el=document.getElementById('ap-'+id+'-'+c.key);
+    if(el) el.textContent=Math.round(al[c.key]/total*100)+'%';
+  });
+  var ue=document.getElementById('af-used-'+id);
+  var re=document.getElementById('af-rem-'+id);
+  if(ue) ue.textContent=fmtF(used);
+  if(re){re.textContent=fmtF(rem);re.style.color=rem<0?'var(--red)':'inherit';}
+}
+function saveAlloc(id,btn){
+  btn.textContent='Saved ✓'; btn.style.background='var(--green)'; btn.style.borderColor='var(--green)';
+  setTimeout(function(){btn.textContent='Save Changes';btn.style.background='';btn.style.borderColor='';},2000);
+  showToast('Allocation saved for '+id);
+}
+
+// ── APPLY ─────────────────────────────────────────────────────────────
+function renderApply(){
+  cnameTags=[];renderCnameTags();
+  renderChips();
+  renderChTable();
+  // pre-fill applicant with current user
+  var u=ROLES[currentRole]||{name:''};
+  var apEl=document.getElementById('f-applicant');
+  if(apEl&&!apEl.value) apEl.value=u.name||'';
+  // reset approver display
+  updateApprover();
+}
+function renderChips(){
+  var container=document.getElementById('apply-chips');
+  container.innerHTML='';
+  REGIONS.forEach(function(r){
+    var can=canSee(r.id);
+    var chip=document.createElement('span');
+    chip.className='chip'+(appRegion===r.id?' chip-sel':'')+(can?'':' chip-locked');
+    chip.textContent=r.id;
+    if(can){
+      (function(region){
+        chip.onclick=function(){
+          appRegion=region;
+          document.querySelectorAll('#apply-chips .chip').forEach(function(c){c.classList.remove('chip-sel');});
+          chip.classList.add('chip-sel');
+          updateHint();
+          populateLinked();
+        };
+      })(r.id);
+    }
+    container.appendChild(chip);
+  });
+  if(!isManager()&&!appRegion){
+    appRegion=myRegion();
+    document.querySelectorAll('#apply-chips .chip').forEach(function(c){
+      if(c.textContent===appRegion) c.classList.add('chip-sel');
+    });
+  }
+  updateHint();
+}
+function updateHint(){
+  var h=document.getElementById('apply-hint');
+  if(!appRegion){h.innerHTML='';return;}
+  var r=REGIONS.filter(function(x){return x.id===appRegion;})[0];
+  var al=allocData[appRegion];
+  var avail=r.budget-r.used;
+  h.innerHTML='<div class="hint-bar">⚡ '+r.name+': Annual '+fmtF(r.budget)+' · Branding '+fmt(al.branding)+' · Promotion '+fmt(al.promotion)+' · Offline '+fmt(al.offline)+' · <strong>Available: '+fmtF(avail)+'</strong></div>';
+}
+// ── CAMPAIGN NAME TAG PICKER ──────────────────────────────────────────
+var cnameTags=[];
+function cnameKeydown(e){
+  if(e.key==='Enter'||e.key===','){
+    e.preventDefault();
+    var v=(e.target.value||'').trim().replace(/,$/,'');
+    if(v) addCnameTag(v);
+    e.target.value='';
+    hideCsug();
+  } else if(e.key==='Backspace'&&e.target.value===''&&cnameTags.length){
+    removeCnameTag(cnameTags.length-1);
+  }
+}
+function addCnameTag(name){
+  if(!name||cnameTags.indexOf(name)>=0) return;
+  cnameTags.push(name);
+  renderCnameTags();
+}
+function removeCnameTag(i){
+  cnameTags.splice(i,1);
+  renderCnameTags();
+}
+function renderCnameTags(){
+  var wrap=document.getElementById('cname-tags');
+  if(!wrap) return;
+  wrap.innerHTML=cnameTags.map(function(t,i){
+    return '<span class="ctag">'+t+'<button class="ctag-x" onclick="removeCnameTag('+i+')" type="button">×</button></span>';
+  }).join('');
+}
+function cnameSuggest(val){
+  var box=document.getElementById('cname-suggest');
+  if(!box) return;
+  if(!val||val.length<1){hideCsug();return;}
+  var matches=CAMPAIGNS.filter(function(c){
+    return canSee(c.region)&&c.name.toLowerCase().indexOf(val.toLowerCase())>=0&&cnameTags.indexOf(c.name)<0;
+  }).slice(0,8);
+  if(!matches.length){hideCsug();return;}
+  box.innerHTML=matches.map(function(c,idx){
+    return '<div class="csug-item" data-idx="'+idx+'" data-name="'+c.name.replace(/"/g,'&quot;')+'">'+c.name+' <span style="font-size:10px;color:var(--g400);margin-left:4px">'+c.region+'</span></div>';
+  }).join('');
+  // use mousedown to fire before blur
+  box.querySelectorAll('.csug-item').forEach(function(el){
+    el.addEventListener('mousedown',function(e){
+      e.preventDefault();
+      addCnameTag(el.getAttribute('data-name'));
+      var inp=document.getElementById('cname-inp');
+      if(inp){inp.value='';inp.focus();}
+      hideCsug();
+    });
+  });
+  var wrap=document.getElementById('cname-tag-wrap');
+  if(wrap){
+    var rect=wrap.getBoundingClientRect();
+    box.style.top=(rect.bottom+window.scrollY+4)+'px';
+    box.style.left=(rect.left+window.scrollX)+'px';
+    box.style.width=rect.width+'px';
+  }
+  box.style.display='block';
+}
+function hideCsug(){var b=document.getElementById('cname-suggest');if(b)b.style.display='none';}
+document.addEventListener('click',function(e){
+  if(!e.target.closest('#cname-tag-wrap')&&!e.target.closest('#cname-suggest'))hideCsug();
+});
+
+function populateLinked(){/* replaced by tag picker */}
+
+function pickType(t){
+  appType=t;
+  ['branding','promotion','offline','other'].forEach(function(x){
+    var el=document.getElementById('tt-'+x);
+    if(el) el.classList.toggle('ttile-sel', x===t);
+  });
+}
+
+// ── CHANNEL TABLE (custom name + preset quick-pick) ────────────────────
+function renderChTable(){
+  var tbody=document.getElementById('ch-tbody');
+  tbody.innerHTML='';
+  var budgetTotal=parseInt(document.getElementById('f-budget')?document.getElementById('f-budget').value:0)||0;
+  var chTotal=chRows.reduce(function(s,r){return s+r.amt;},0);
+  chRows.forEach(function(row,i){
+    var pct=chTotal>0?Math.round(row.amt/chTotal*100):0;
+    var tr=document.createElement('tr');
+    var presetOpts='<option value="" disabled>— Preset —</option>'+CHANNELS.map(function(c){return '<option value="'+c+'">'+c+'</option>';}).join('');
+    tr.innerHTML='<td>'
+      +'<div class="ch-name-cell">'
+      +'<input class="ch-custom-inp" type="text" value="'+row.ch+'" placeholder="Channel name (custom or preset)" oninput="chRows['+i+'].ch=this.value">'
+      +'<select style="flex-shrink:0;width:30px;padding:5px 2px;border:1px solid var(--g300);border-radius:5px;background:#fff;cursor:pointer;font-size:11px;color:var(--g400);outline:none" title="Quick-select a preset channel" onchange="chRows['+i+'].ch=this.value;renderChTable()">'+presetOpts+'</select>'
+      +'</div></td>'
+      +'<td><input type="number" value="'+row.amt+'" oninput="chRows['+i+'].amt=parseInt(this.value)||0;updCh()" style="width:100%;padding:6px 8px;border:1px solid var(--g300);border-radius:5px;font-size:12.5px;font-family:\'Inter\',sans-serif;background:#fff;color:var(--g800);outline:none"></td>'
+      +'<td><select onchange="chRows['+i+'].cur=this.value" style="width:100%;padding:6px 8px;border:1px solid var(--g300);border-radius:5px;font-size:12.5px;font-family:\'Inter\',sans-serif;background:#fff;color:var(--g800);outline:none">'+['USD','AUD','BRL','KRW','EUR'].map(function(c){return '<option'+(row.cur===c?' selected':'')+'>'+c+'</option>';}).join('')+'</select></td>'
+      +'<td style="text-align:center;font-size:12px;font-weight:600;color:'+(pct>0?'var(--blue)':'var(--g300)')+'">'+pct+'%</td>'
+      +'<td><button class="del-btn" onclick="rmCh('+i+')">×</button></td>';
+    tbody.appendChild(tr);
+  });
+  updCh();
+}
+function addCh(){
+  chRows.push({ch:'',amt:10000,cur:'USD'});
+  renderChTable();
+  setTimeout(function(){
+    var inputs=document.querySelectorAll('#ch-tbody .ch-custom-inp');
+    if(inputs.length) inputs[inputs.length-1].focus();
+  },50);
+}
+function rmCh(i){chRows.splice(i,1);renderChTable();}
+function updCh(){
+  var chTotal=chRows.reduce(function(s,r){return s+r.amt;},0);
+  var budgetEl=document.getElementById('f-budget');
+  var budgetTotal=budgetEl?parseInt(budgetEl.value)||0:0;
+  var rem=budgetTotal-chTotal;
+  var h=document.getElementById('ch-hint');
+  if(h) h.textContent='';
+  var tl=document.getElementById('ch-total-label');
+  var al=document.getElementById('ch-allocated-label');
+  var rl=document.getElementById('ch-remaining-label');
+  if(tl) tl.textContent=budgetTotal?fmtF(budgetTotal):'—';
+  if(al) al.textContent=fmtF(chTotal);
+  if(rl){
+    rl.textContent=budgetTotal?fmtF(rem):'—';
+    rl.style.color=rem<0?'var(--red)':'var(--green)';
+  }
+  // re-render % column without full re-render (just update text)
+  var rows=document.querySelectorAll('#ch-tbody tr');
+  rows.forEach(function(tr,i){
+    var pctCell=tr.querySelector('td:nth-child(4)');
+    if(pctCell&&chRows[i]){
+      var pct=chTotal>0?Math.round(chRows[i].amt/chTotal*100):0;
+      pctCell.textContent=pct+'%';
+      pctCell.style.color=pct>0?'var(--blue)':'var(--g300)';
+    }
+  });
+}
+
+// Approver logic
+function updateApprover(){
+  var el=document.getElementById('f-budget');
+  var amt=el?parseInt(el.value)||0:0;
+  var nameEl=document.getElementById('approver-name');
+  var iconEl=document.getElementById('approver-icon');
+  if(!nameEl||!iconEl) return;
+  if(!amt){
+    nameEl.textContent='Enter budget amount to auto-assign';
+    iconEl.textContent='—';
+    iconEl.style.background='var(--g300)';
+    return;
+  }
+  // also update channel bar
+  updCh();
+  if(amt<=10000){
+    nameEl.innerHTML='<strong>Amanda Chen</strong> <span style="font-size:11px;color:var(--g400)">Budget Controller</span>';
+    iconEl.textContent='AC';
+    iconEl.style.background='var(--teal,#0f766e)';
+    iconEl.style.background='#0f766e';
+  } else {
+    nameEl.innerHTML='<strong>Paddy T.</strong> <span style="font-size:11px;color:var(--g400)">Director</span>';
+    iconEl.textContent='PT';
+    iconEl.style.background='var(--violet,#7c3aed)';
+    iconEl.style.background='#7c3aed';
+  }
+}
+
+function setStep(n, state){
+  var card=document.getElementById('sc'+n);
+  if(!card) return;
+  card.className='sc'+(state==='active'?' sc-active':state==='locked'?' sc-locked':'');
+  var badge=card.querySelector('.sc-badge');
+  var existing=card.querySelector('.sc-check');
+  if(state==='done'){
+    if(badge) badge.className='sc-badge sb-done';
+    if(!existing){
+      var ck=document.createElement('span');
+      ck.className='sc-check';
+      ck.innerHTML='<svg viewBox="0 0 12 12"><path d="M2 6l3 3 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      card.querySelector('.sc-head').appendChild(ck);
+    }
+  } else {
+    if(existing) existing.remove();
+    var classes={1:'sb01',2:'sb02',3:'sb03',4:'sb-rev'};
+    if(badge&&classes[n]) badge.className='sc-badge '+classes[n];
+  }
+}
+
+function stepNext(from){
+  if(from===1){
+    if(!appRegion){showToast('Please select a region');return;}
+    var applicant=(document.getElementById('f-applicant').value||'').trim();
+    if(!applicant){showToast('Please enter your name');return;}
+    setStep(1,'done');setStep(2,'active');
+    cnameTags=[];renderCnameTags();
+  } else if(from===2){
+    var inp=document.getElementById('cname-inp');
+    if(inp&&inp.value.trim()) addCnameTag(inp.value.trim());
+    if(inp) inp.value='';
+    if(!cnameTags.length){showToast('Link at least one campaign (press Enter to confirm)');return;}
+    var budget=parseInt((document.getElementById('f-budget').value||'0'));
+    if(!budget){showToast('Please enter the requested budget amount');return;}
+    var kpi=(document.getElementById('f-kpi').value||'');
+    if(!kpi){showToast('Please select a target KPI');return;}
+    renderChTable();
+    updCh();
+    setStep(2,'done');setStep(3,'active');
+  } else if(from===3){
+    buildReview();
+    setStep(3,'done');setStep(4,'active');
+  }
+}
+function stepBack(to){
+  setStep(to,'locked');
+  setStep(to-1,'active');
+}
+function buildReview(){
+  var r=REGIONS.filter(function(x){return x.id===appRegion;})[0];
+  var start=document.getElementById('f-start').value;
+  var end=document.getElementById('f-end').value;
+  var budget=parseInt(document.getElementById('f-budget').value)||0;
+  var currency=document.getElementById('f-currency').value;
+  var kpi=document.getElementById('f-kpi').value;
+  var kpiVal=document.getElementById('f-kpi-val').value;
+  var applicant=document.getElementById('f-applicant').value;
+  var approverName=document.getElementById('approver-name')?document.getElementById('approver-name').textContent:'—';
+  var chTotal=chRows.reduce(function(s,rw){return s+rw.amt;},0);
+  var chLines=chRows.filter(function(rw){return rw.ch;}).map(function(rw){
+    var pct=chTotal>0?Math.round(rw.amt/chTotal*100):0;
+    return '<div style="display:flex;justify-content:space-between;padding:3px 0;font-size:12px;border-bottom:1px solid var(--g50)">'
+      +'<span>'+rw.ch+'</span>'
+      +'<span style="font-weight:500">'+fmtF(rw.amt)+' '+rw.cur+' <span style="color:var(--g400);font-weight:400">('+pct+'%)</span></span>'
+      +'</div>';
+  }).join('');
+  var nameDisplay=cnameTags.map(function(t){return '<span class="ctag" style="font-size:11px">'+t+'</span>';}).join(' ');
+  document.getElementById('rev-content').innerHTML='<div class="rev-box"><h3>Application Summary</h3>'
+    +'<div class="rrow"><span class="rkey">Applicant</span><span class="rval">'+applicant+'</span></div>'
+    +'<div class="rrow"><span class="rkey">Market / Region</span><span class="rval">'+r.flag+' '+r.name+'</span></div>'
+    +'<div class="rrow"><span class="rkey">Campaign Period</span><span class="rval">'+start+' → '+end+'</span></div>'
+    +'<div class="rrow" style="align-items:flex-start"><span class="rkey">Linked Campaigns</span><span class="rval" style="display:flex;flex-wrap:wrap;gap:4px;justify-content:flex-end">'+nameDisplay+'</span></div>'
+    +'<div class="rrow"><span class="rkey">Budget Purpose</span><span class="rval" style="text-transform:capitalize">'+appType+'</span></div>'
+    +'<div class="rrow"><span class="rkey">Requested Budget</span><span class="rval rval-big">'+fmtF(budget)+' '+currency+'</span></div>'
+    +'<div class="rrow"><span class="rkey">Target KPI</span><span class="rval">'+kpi+(kpiVal?' · '+kpiVal:'')+'</span></div>'
+    +'<div style="margin-top:10px;margin-bottom:4px;font-size:11px;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.06em">Channel Allocation</div>'
+    +chLines
+    +'<div class="rrow" style="margin-top:10px"><span class="rkey">Approver</span><span class="rval" style="display:flex;align-items:center;gap:6px">'
+    +'<span id="rev-approver-icon" style="width:22px;height:22px;border-radius:50%;background:'+(budget<=10000?'#0f766e':'#7c3aed')+';color:#fff;font-size:9px;font-weight:600;display:inline-flex;align-items:center;justify-content:center">'+(budget<=10000?'AC':'PT')+'</span>'
+    +(budget<=10000?'<strong>Amanda Chen</strong>':'<strong>Paddy T.</strong>') + ' <span style="font-size:11px;color:var(--g400)">('+currency+' '+(budget<=10000?'≤$10,000':'>$10,000')+')</span>'
+    +'</span></div>'
+    +'</div>';
+  document.getElementById('rev-foot').style.display='block';
+}
+function doSubmit(){
+  var nm=cnameTags.join(' + ');
+  var budget=parseInt(document.getElementById('f-budget').value)||0;
+  var applicant=document.getElementById('f-applicant').value;
+  var approver=budget<=10000?'Amanda Chen':'Paddy T.';
+  var u=ROLES[currentRole]||{name:currentRole};
+  REQUESTS.unshift({
+    name:nm,region:appRegion,
+    type:appType.charAt(0).toUpperCase()+appType.slice(1),
+    total:budget,
+    channels:chRows.filter(function(r){return r.ch;}).map(function(r){return r.ch;}).join(', '),
+    date:new Date().toLocaleDateString('en-AU'),
+    status:'Pending',
+    applicant:applicant,
+    approver:approver
+  });
+  CAMPAIGNS.unshift({name:nm,owner:applicant||u.name,region:appRegion,priority:'',type:appType.toUpperCase(),amount:budget,status:'Waiting',start:document.getElementById('f-start').value.replaceAll('-','/'),end:document.getElementById('f-end').value.replaceAll('-','/')});
+  document.getElementById('status-panel').style.display='block';
+  var subText=document.getElementById('sp-sub-text');
+  if(subText) subText.textContent='Submitted — pending approval from '+approver+' Approval';
+  setStep(4,'done');
+  document.getElementById('rev-foot').innerHTML='<span style="color:var(--green);font-size:13px;font-weight:600">✓ Submitted — pending approval from '+approver+' Approval</span>';
+  showToast('Application submitted! Approver: '+approver);
+  var cnt=document.getElementById('brt-count');
+  if(cnt) cnt.textContent=REQUESTS.filter(function(r){return canSee(r.region);}).length;
+}
+
+// ── REQUESTS ──────────────────────────────────────────────────────────
+function renderReqs(){
+  var rFel=document.getElementById('rf-region');
+  if(!isManager()){rFel.value=myRegion();rFel.disabled=true;}
+  else rFel.disabled=false;
+  var rF=rFel.value;
+  var tF=document.getElementById('rf-type').value;
+  var sF=document.getElementById('rf-status').value;
+  var data=REQUESTS.filter(function(r){
+    if(!canSee(r.region)) return false;
+    if(rF&&r.region!==rF) return false;
+    if(tF&&r.type.toLowerCase()!==tF.toLowerCase()) return false;
+    if(sF&&r.status.toLowerCase()!==sF.toLowerCase()) return false;
+    return true;
+  });
+  var sub=document.getElementById('br-sub');
+  if(sub) sub.textContent=(isManager()?'All regions':'Region: '+myRegion())+' · '+data.length+' requests';
+  var tbody=document.getElementById('req-tbody');
+  tbody.innerHTML=data.length?data.map(function(r){
+    return '<tr><td class="td-name" title="'+r.name+'">'+r.name+'</td>'
+      +'<td style="font-weight:500">'+r.region+'</td>'
+      +'<td>'+r.type+'</td>'
+      +'<td style="font-weight:600">'+fmtF(r.total)+'</td>'
+      +'<td class="td-muted">'+r.channels+'</td>'
+      +'<td class="td-muted">'+r.date+'</td>'
+      +'<td>'+badge(r.status)+'</td>'
+      +'<td><button class="dots-btn">···</button></td></tr>';
+  }).join(''):'<tr><td colspan="8" class="empty">No requests found</td></tr>';
+}
+function resetReqs(){
+  document.getElementById('rf-region').value='';
+  document.getElementById('rf-type').value='';
+  document.getElementById('rf-status').value='';
+  renderReqs();
+}
+
+// ── MODAL ─────────────────────────────────────────────────────────────
+function openModal(){document.getElementById('create-modal').style.display='flex';}
+function closeModal(){document.getElementById('create-modal').style.display='none';}
+function createCampaign(){
+  var nm=(document.getElementById('m-name').value||'').trim();
+  if(!nm){showToast('Enter a campaign name');return;}
+  var region=document.getElementById('m-region').value;
+  var type=document.getElementById('m-type').value;
+  var start=document.getElementById('m-start').value.replaceAll('-','/');
+  var end=document.getElementById('m-end').value.replaceAll('-','/');
+  var owner=document.getElementById('m-owner').value;
+  var priority=document.getElementById('m-priority').value;
+  CAMPAIGNS.unshift({name:nm,owner:owner,region:region,priority:priority,type:type,amount:0,status:'Draft',start:start,end:end});
+  closeModal();
+  renderCampaigns();
+  showToast('"'+nm+'" created as Draft');
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────
+renderCampaigns();
+</script>
+</body>
+</html>
