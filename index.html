@@ -350,7 +350,7 @@ tr:hover td{background:#fafbfe}
       <svg class="sb-chev" data-chev="reporting" viewBox="0 0 16 16"><path d="M4 6l4 4 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </div>
     <div class="sb-children" id="grp-reporting">
-      <div class="sb-child" data-page="generic">Overview</div>
+      <div class="sb-child" data-page="marketing-analytics" id="nav-marketing-analytics">Marketing Analytics</div>
       <div class="sb-child" data-page="generic">Channel Reports</div>
     </div>
 
@@ -367,10 +367,12 @@ tr:hover td{background:#fafbfe}
 
   <div class="role-sw">
     <div class="role-sw-lbl">Demo: Switch Role</div>
-    <div class="role-btns">
+    <div class="role-btns" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px">
       <button class="rb rb-active" id="rb-manager" onclick="switchRole('manager')">Mgr</button>
-      <button class="rb" id="rb-LATAM" onclick="switchRole('LATAM')">LATAM</button>
+      <button class="rb" id="rb-nick" onclick="switchRole('nick')">Nick</button>
+      <button class="rb" id="rb-fabio" onclick="switchRole('fabio')">Fabio</button>
       <button class="rb" id="rb-KR" onclick="switchRole('KR')">KR</button>
+      <button class="rb" id="rb-AU" onclick="switchRole('AU')">AU</button>
       <button class="rb" id="rb-BR" onclick="switchRole('BR')">BR</button>
     </div>
   </div>
@@ -380,7 +382,17 @@ tr:hover td{background:#fafbfe}
 <div class="main">
   <div class="topbar">
     <svg class="hamburger" viewBox="0 0 20 20"><path d="M3 5h14M3 10h14M3 15h14" stroke-linecap="round"/></svg>
-    <div class="topbar-r">
+    <div class="topbar-r" style="display:flex;align-items:center;gap:10px">
+      <!-- Country filter -->
+      <div style="display:flex;align-items:center;gap:6px" id="country-filter-wrap">
+        <span style="font-size:12px;color:var(--g400);white-space:nowrap">Market:</span>
+        <select id="global-country-filter" class="fsel" style="min-width:130px;font-size:12px;padding:5px 24px 5px 8px" onchange="applyCountryFilter()">
+          <option value="">All Markets</option>
+          <option>KR</option><option>NZ</option><option>AU</option>
+          <option>BR</option><option>LATAM</option><option>EU</option><option>VN</option>
+        </select>
+      </div>
+      <span id="topbar-role-badge" style="font-size:11px;background:var(--blue-lt);color:var(--blue);padding:3px 10px;border-radius:20px;font-weight:500;display:none">Manager</span>
       <span class="tb-email" id="tb-email">w.nikki@zeromarkets.com</span>
       <div class="tb-avatar" id="tb-avatar">NW</div>
     </div>
@@ -562,13 +574,14 @@ tr:hover td{background:#fafbfe}
       <div class="fg"><span class="flbl">Region:</span><select class="fsel" id="rf-region" style="min-width:140px"><option value="">All Regions</option><option>LATAM</option><option>KR</option><option>BR</option><option>VN</option><option>AU</option><option>NZ</option></select></div>
       <div class="fg"><span class="flbl">Type:</span><select class="fsel" id="rf-type" style="min-width:130px"><option value="">All Types</option><option>Branding</option><option>Promotion</option><option>Offline</option></select></div>
       <div class="fg"><span class="flbl">Status:</span><select class="fsel" id="rf-status" style="min-width:130px"><option value="">All Status</option><option>Approved</option><option>Pending</option><option>Rejected</option><option>Draft</option></select></div>
+      <div class="fg"><span class="flbl">Owner:</span><select class="fsel" id="rf-owner" style="min-width:130px"><option value="">All Owners</option><option>Allysson</option><option>Maxine</option><option>Carlos</option><option>Sarah</option><option>Mariana</option></select></div>
       <div class="f-actions">
         <button class="btn btn-primary btn-sm" onclick="renderReqs()"><svg viewBox="0 0 16 16" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2"><circle cx="7" cy="7" r="4.5"/><path d="M11 11l3 3" stroke-linecap="round"/></svg>Search</button>
         <button class="btn btn-sm" onclick="resetReqs()">Reset</button>
       </div>
     </div>
     <div class="tbl-area"><table>
-      <thead><tr><th>Campaign Name</th><th>Region</th><th>Type</th><th>Total Budget</th><th>Channels</th><th>Submitted</th><th>Status</th><th>Actions</th></tr></thead>
+      <thead><tr><th>Campaign Name</th><th>Owner</th><th>Region</th><th>Type</th><th>Total Budget</th><th>Channels</th><th>Submitted</th><th>Status</th><th>Actions</th></tr></thead>
       <tbody id="req-tbody"></tbody>
     </table></div>
   </div>
@@ -707,11 +720,17 @@ tr:hover td{background:#fafbfe}
             <span id="ch-remaining-label" style="font-weight:600;color:var(--green)">—</span>
           </div>
           <table class="chtbl" id="ch-tbl">
-            <thead><tr><th>Channel</th><th>Budget Amount</th><th>Currency</th><th>% of Total</th><th></th></tr></thead>
+            <thead><tr><th>Channel</th><th>Total Budget</th><th>Currency</th><th>Monthly Budget <span style="font-size:9px;color:#7c3aed">(New Platform)</span></th><th>% of Total</th><th></th></tr></thead>
             <tbody id="ch-tbody"></tbody>
           </table>
           <div style="font-size:11px;color:var(--g400);margin-top:6px">Preset channels: Meta · Google · YouTube · TikTok · Investing.com · Rankia · TradingView · Reddit · AdRoll · LinkedIn · X · or type a custom channel name</div>
-          <button class="add-ch" onclick="addCh()">+ Add Channel</button>
+          <div style="display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap">
+  <button class="add-ch" onclick="addCh(false)" style="margin-top:0">+ Add Existing Channel</button>
+  <button class="add-ch" onclick="addCh(true)" style="margin-top:0;border-color:#a78bfa;color:#7c3aed">+ New Platform Contract</button>
+</div>
+<div id="new-platform-hint" style="display:none;margin-top:8px;padding:8px 12px;background:#f5f3ff;border:1px solid #ddd6fe;border-radius:6px;font-size:12px;color:#6d28d9">
+  ⚡ <strong>New Platform Contract</strong> — this channel has not been signed yet. Enter the platform name, monthly budget, and currency. The request will be flagged for procurement review.
+</div>
           <div class="ch-hint" id="ch-hint"></div>
           <div class="sc-foot">
             <button class="btn btn-sm" onclick="stepBack(3)">← Back</button>
@@ -750,6 +769,31 @@ tr:hover td{background:#fafbfe}
 </div>
 
 <!-- ===== GENERIC ===== -->
+<div class="page" id="page-marketing-analytics">
+  <div class="ph" style="margin-bottom:0">
+    <div><div class="pt">Marketing Analytics</div><div class="ps">Live performance dashboard — ZERO Markets</div></div>
+    <a href="https://nikki8251.github.io/marketing_overview/" target="_blank" class="btn btn-sm" style="text-decoration:none">
+      <svg viewBox="0 0 16 16" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2"><path d="M10 3h3v3M13 3l-6 6M5 4H3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Open Full Screen
+    </a>
+  </div>
+  <div style="margin-top:12px;border-radius:8px;overflow:hidden;border:1px solid var(--g200);background:#fff;position:relative">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:var(--g50);border-bottom:1px solid var(--g200)">
+      <div style="display:flex;align-items:center;gap:6px">
+        <span style="font-size:11px;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.06em">Source</span>
+        <span style="font-size:12px;font-weight:500;color:var(--g700)">nikki8251.github.io/marketing_overview</span>
+      </div>
+      <span style="font-size:11px;background:var(--green-lt);color:var(--green);padding:2px 8px;border-radius:10px;font-weight:600">● LIVE</span>
+    </div>
+    <iframe
+      src="https://nikki8251.github.io/marketing_overview/"
+      style="width:100%;height:calc(100vh - 160px);min-height:700px;border:none;display:block"
+      title="ZERO Markets Marketing Analytics"
+      loading="lazy"
+      allow="fullscreen"
+    ></iframe>
+  </div>
+</div>
 <div class="page" id="page-generic"><div class="empty" style="padding:80px">This module is under construction.</div></div>
 <div class="page" id="page-my-tasks"><div class="ph"><div><div class="pt">My Tasks</div></div></div><div class="empty">No tasks assigned.</div></div>
 
@@ -788,6 +832,7 @@ var REGIONS=[
   {id:'KR',name:'Korea',budget:600000,used:225000,flag:'🇰🇷',head:'Ji-hoon K.'},
   {id:'BR',name:'Brazil',budget:1000000,used:344000,flag:'🇧🇷',head:'Rafael S.'},
   {id:'VN',name:'Vietnam',budget:300000,used:82000,flag:'🇻🇳',head:'Linh N.'},
+  {id:'EU',name:'Europe',budget:350000,used:95000,flag:'🇪🇺',head:'Fabio'},
   {id:'AU',name:'Australia',budget:400000,used:124000,flag:'🇦🇺',head:'Paddy T.'},
   {id:'NZ',name:'New Zealand',budget:200000,used:61000,flag:'🇳🇿',head:'Sarah B.'}
 ];
@@ -822,38 +867,108 @@ var CAMPAIGNS=[
   {name:'AU Webinar Push',owner:'Paddy T.',region:'AU',priority:'High',type:'BRANDING',amount:20000,status:'Completed',start:'2026/03/01',end:'2026/03/31'},
   {name:'NZ Acquisition Drive',owner:'Sarah B.',region:'NZ',priority:'Low',type:'PROMOTION',amount:18000,status:'Rejected',start:'2026/04/01',end:'2026/04/30'},
 ];
+var OWNERS=['Allysson','Maxine','Carlos','Sarah','Mariana'];
 var REQUESTS=[
-  {name:'WELCOME BONUS PROGRAM',region:'BR',type:'Promotion',total:80000,channels:'Meta, Google',date:'2026/04/10',status:'Approved'},
-  {name:'Korea Brand Awareness Q2',region:'KR',type:'Branding',total:55000,channels:'YouTube, TikTok',date:'2026/04/18',status:'Approved'},
-  {name:'LATAM Deposit Promo May',region:'LATAM',type:'Promotion',total:40000,channels:'Meta, TradingView',date:'2026/04/25',status:'Pending'},
-  {name:'VN Seminar Series',region:'VN',type:'Offline',total:15000,channels:'—',date:'2026/04/28',status:'Pending'},
-  {name:'AU Webinar Push',region:'AU',type:'Branding',total:20000,channels:'LinkedIn, Google',date:'2026/03/30',status:'Approved'},
-  {name:'NZ Acquisition Drive',region:'NZ',type:'Promotion',total:18000,channels:'Meta, Reddit',date:'2026/04/02',status:'Rejected'},
+  {name:'WELCOME BONUS PROGRAM',region:'BR',type:'Promotion',total:80000,channels:'Meta, Google',date:'2026/04/10',status:'Approved',owner:'Mariana'},
+  {name:'Korea Brand Awareness Q2',region:'KR',type:'Branding',total:55000,channels:'YouTube, TikTok',date:'2026/04/18',status:'Approved',owner:'Maxine'},
+  {name:'LATAM Deposit Promo May',region:'LATAM',type:'Promotion',total:40000,channels:'Meta, TradingView',date:'2026/04/25',status:'Pending',owner:'Carlos'},
+  {name:'VN Seminar Series',region:'VN',type:'Offline',total:15000,channels:'—',date:'2026/04/28',status:'Pending',owner:'Allysson'},
+  {name:'AU Webinar Push',region:'AU',type:'Branding',total:20000,channels:'LinkedIn, Google',date:'2026/03/30',status:'Approved',owner:'Sarah'},
+  {name:'NZ Acquisition Drive',region:'NZ',type:'Promotion',total:18000,channels:'Meta, Reddit',date:'2026/04/02',status:'Rejected',owner:'Sarah'},
 ];
 
 // ── ROLE ──────────────────────────────────────────────────────────────
+// Country heads and their markets
+var COUNTRY_HEADS={
+  nick: {name:'Nick',email:'nick@zeromarkets.com',ini:'NK',regions:['KR','NZ','AU'],title:'Country Head · KR/NZ/AU'},
+  fabio:{name:'Fabio',email:'fabio@zeromarkets.com',ini:'FB',regions:['BR','LATAM','EU'],title:'Country Head · BR/LATAM/EU'},
+};
 var ROLES={
-  manager:{name:'Nikki W.',email:'w.nikki@zeromarkets.com',ini:'NW',region:null},
-  LATAM:{name:'Carlos M.',email:'carlos@zeromarkets.com',ini:'CM',region:'LATAM'},
-  KR:{name:'Ji-hoon K.',email:'jihoon@zeromarkets.com',ini:'JK',region:'KR'},
-  BR:{name:'Rafael S.',email:'rafael@zeromarkets.com',ini:'RS',region:'BR'},
+  manager:{name:'Nikki W.',email:'w.nikki@zeromarkets.com',ini:'NW',regions:null,title:'Marketing Manager'},
+  nick:   {name:'Nick',email:'nick@zeromarkets.com',ini:'NK',regions:['KR','NZ','AU'],title:'Country Head · KR/NZ/AU'},
+  fabio:  {name:'Fabio',email:'fabio@zeromarkets.com',ini:'FB',regions:['BR','LATAM','EU'],title:'Country Head · BR/LATAM/EU'},
+  KR:     {name:'KR Marketer',email:'kr@zeromarkets.com',ini:'KR',regions:['KR'],title:'Marketer · Korea'},
+  NZ:     {name:'NZ Marketer',email:'nz@zeromarkets.com',ini:'NZ',regions:['NZ'],title:'Marketer · New Zealand'},
+  AU:     {name:'AU Marketer',email:'au@zeromarkets.com',ini:'AU',regions:['AU'],title:'Marketer · Australia'},
+  BR:     {name:'BR Marketer',email:'br@zeromarkets.com',ini:'BR',regions:['BR'],title:'Marketer · Brazil'},
+  LATAM:  {name:'LATAM Marketer',email:'latam@zeromarkets.com',ini:'LM',regions:['LATAM'],title:'Marketer · LATAM'},
+  EU:     {name:'EU Marketer',email:'eu@zeromarkets.com',ini:'EU',regions:['EU'],title:'Marketer · Europe'},
+  VN:     {name:'VN Marketer',email:'vn@zeromarkets.com',ini:'VN',regions:['VN'],title:'Marketer · Vietnam'},
 };
 var currentRole='manager';
 function isManager(){return currentRole==='manager';}
-function myRegion(){return ROLES[currentRole]?ROLES[currentRole].region:null;}
-function canSee(rid){return isManager()||myRegion()===rid;}
+function isCountryHead(){return currentRole==='nick'||currentRole==='fabio';}
+function myRegions(){
+  var u=ROLES[currentRole];
+  if(!u||!u.regions) return null; // manager sees all
+  return u.regions;
+}
+function myRegion(){
+  var rs=myRegions();
+  return rs&&rs.length===1?rs[0]:null; // backward compat for single-region marketer
+}
+function canSee(rid){
+  if(isManager()) return true;
+  var rs=myRegions();
+  if(!rs) return true;
+  return rs.indexOf(rid)>=0;
+}
 
 function switchRole(r){
   currentRole=r;
   document.querySelectorAll('.rb').forEach(function(b){b.classList.remove('rb-active');});
   var rb=document.getElementById('rb-'+r);
   if(rb)rb.classList.add('rb-active');
-  var u=ROLES[r]||{name:r,email:r+'@zeromarkets.com',ini:r.slice(0,2),region:r};
+  var u=ROLES[r]||{name:r,email:r+'@zeromarkets.com',ini:r.slice(0,2),regions:[r],title:'Marketer'};
   document.getElementById('tb-email').textContent=u.email;
   document.getElementById('tb-avatar').textContent=u.ini;
-  // lock/hide alloc for non-managers
+  // update role badge in topbar
+  var badge=document.getElementById('topbar-role-badge');
+  if(badge){badge.textContent=u.title;badge.style.display='inline';}
+  // pre-fill applicant in apply form if loaded
+  var apEl=document.getElementById('f-applicant');
+  if(apEl) apEl.value=u.name;
+  // update country filter options
+  updateCountryFilter();
   refreshCurrent();
-  showToast('Switched to '+u.name);
+  showToast('Switched to '+u.name+' ('+u.title+')');
+}
+
+// ── COUNTRY FILTER ────────────────────────────────────────────────────
+var activeCountryFilter=''; // '' = all visible markets
+function updateCountryFilter(){
+  var sel=document.getElementById('global-country-filter');
+  if(!sel) return;
+  // manager & country heads see the filter; single-market marketers don't need it
+  var rs=myRegions();
+  if(!rs){
+    // manager: show all options, no lock
+    sel.disabled=false;
+    sel.innerHTML='<option value="">All Markets</option>'
+      +'<option>KR</option><option>NZ</option><option>AU</option>'
+      +'<option>BR</option><option>LATAM</option><option>EU</option><option>VN</option>';
+  } else if(rs.length>1){
+    // country head: only their markets
+    sel.disabled=false;
+    sel.innerHTML='<option value="">All My Markets</option>'
+      +rs.map(function(r){return '<option>'+r+'</option>';}).join('');
+  } else {
+    // single marketer: lock to their market
+    sel.disabled=true;
+    sel.innerHTML='<option>'+rs[0]+'</option>';
+  }
+  sel.value=activeCountryFilter&&canSee(activeCountryFilter)?activeCountryFilter:'';
+}
+function applyCountryFilter(){
+  var sel=document.getElementById('global-country-filter');
+  activeCountryFilter=sel?sel.value:'';
+  refreshCurrent();
+}
+function effectiveRegions(){
+  // what regions are visible given role + active filter
+  var allowed=REGIONS.filter(function(r){return canSee(r.id);}).map(function(r){return r.id;});
+  if(activeCountryFilter) return allowed.indexOf(activeCountryFilter)>=0?[activeCountryFilter]:[];
+  return allowed;
 }
 
 // ── NAVIGATION ────────────────────────────────────────────────────────
@@ -916,6 +1031,7 @@ function refreshCurrent(){
   else if(currentPageId==='budget-overview') renderOverview('bo');
   else if(currentPageId==='budget-mgmt') renderBudgetMgmt();
   else if(currentPageId==='budget-requests') renderBudgetRequests();
+  // marketing-analytics, payments etc need no JS refresh
 }
 
 // ── HELPERS ───────────────────────────────────────────────────────────
@@ -942,8 +1058,9 @@ function renderCampaigns(){
   var rF=regionF.value;
   var statusMap={ACTIVE:'approved',DRAFT:'draft',WAITING:'waiting',COMPLETED:'completed',REJECTED:'rejected'};
   var stKey=statusMap[campTabFilter]||'approved';
+  var effR=effectiveRegions();
   var data=CAMPAIGNS.filter(function(c){
-    if(!canSee(c.region)) return false;
+    if(effR.indexOf(c.region)<0) return false;
     if(nameF&&c.name.toLowerCase().indexOf(nameF)<0) return false;
     if(ownerF&&c.owner.toLowerCase().indexOf(ownerF)<0) return false;
     if(rF&&c.region!==rF) return false;
@@ -974,34 +1091,34 @@ function resetCamp(){
 
 // ── OVERVIEW ──────────────────────────────────────────────────────────
 function renderOverview(pfx){
-  var vis=REGIONS.filter(function(r){return canSee(r.id);});
+  var effR=effectiveRegions(); // respects both role + active country filter
+  var vis=REGIONS.filter(function(r){return effR.indexOf(r.id)>=0;});
   var tb=vis.reduce(function(s,r){return s+r.budget;},0);
   var tu=vis.reduce(function(s,r){return s+r.used;},0);
   var sub=document.getElementById(pfx+'-sub');
   var mc=document.getElementById(pfx+'-metrics');
   var grid=document.getElementById(pfx+'-grid');
   if(!sub||!mc||!grid) return;
-  sub.textContent=(isManager()?'All regions':'Region: '+myRegion())+' · Total '+fmt(tb)+' USD';
+  var filterLabel=activeCountryFilter?activeCountryFilter:(isManager()?'All regions':myRegions()&&myRegions().length>1?myRegions().join(' · '):'Region: '+myRegion());
+  sub.textContent=filterLabel+' · Total '+fmt(tb)+' USD';
   mc.innerHTML='<div class="mc"><div class="mc-lbl">Annual Budget</div><div class="mc-val">'+fmt(tb)+'</div><div class="mc-sub">FY 2026 total</div></div>'
-    +'<div class="mc"><div class="mc-lbl">Spent to Date</div><div class="mc-val">'+fmt(tu)+'</div><div class="mc-sub">'+Math.round(tu/tb*100)+'% utilised</div></div>'
+    +'<div class="mc"><div class="mc-lbl">Spent to Date</div><div class="mc-val">'+fmt(tu)+'</div><div class="mc-sub">'+Math.round(tb?tu/tb*100:0)+'% utilised</div></div>'
     +'<div class="mc"><div class="mc-lbl">Remaining</div><div class="mc-val" style="color:var(--green)">'+fmt(tb-tu)+'</div><div class="mc-sub">Available</div></div>'
-    +'<div class="mc"><div class="mc-lbl">Regions</div><div class="mc-val">'+vis.length+'</div><div class="mc-sub">'+(isManager()?'Global access':'Your region')+'</div></div>';
+    +'<div class="mc"><div class="mc-lbl">Markets</div><div class="mc-val">'+vis.length+'</div><div class="mc-sub">'+(activeCountryFilter?'Filtered':'All accessible')+'</div></div>';
   grid.innerHTML='';
-  REGIONS.forEach(function(r){
-    var can=canSee(r.id);
+  vis.forEach(function(r){
     var pct=Math.round(r.used/r.budget*100);
     var card=document.createElement('div');
-    card.className='rc'+(can?'':' locked');
-    card.innerHTML='<div class="rc-top"><div class="rc-name"><span>'+r.flag+'</span>'+r.name+'</div>'+(can?'<span style="font-size:11px;color:var(--g400)">'+pct+'% used</span>':'<span style="font-size:13px;color:var(--g300)">🔒</span>')+'</div>'
+    card.className='rc';
+    card.innerHTML='<div class="rc-top"><div class="rc-name"><span>'+r.flag+'</span>'+r.name+'</div>'
+      +'<span style="font-size:11px;color:var(--g400)">'+pct+'% used</span></div>'
       +'<div class="rc-budget">'+fmt(r.budget)+'</div>'
       +'<div class="rc-meta">Head: '+r.head+' · Remaining: '+fmt(r.budget-r.used)+'</div>'
       +'<div class="prog"><div class="prog-fill'+(pct>90?' over':'')+'" style="width:'+pct+'%"></div></div>'
       +'<div class="rc-pct">'+pct+'% of '+fmt(r.budget)+' utilised</div>';
-    if(can){
-      (function(region, prefix){
-        card.onclick=function(){showOvDetail(region, prefix);};
-      })(r, pfx);
-    }
+    (function(region,prefix){
+      card.onclick=function(){showOvDetail(region,prefix);};
+    })(r,pfx);
     grid.appendChild(card);
   });
 }
@@ -1094,11 +1211,13 @@ function switchBrTab(tab){
 function renderAlloc(){
   var gate=document.getElementById('alloc-gate');
   var main=document.getElementById('alloc-main');
-  if(!isManager()){gate.style.display='block';main.style.display='none';return;}
+  if(!isManager()&&!isCountryHead()){gate.style.display='block';main.style.display='none';return;}
   gate.style.display='none'; main.style.display='grid';
+  var effR=effectiveRegions();
+  var visRegions=REGIONS.filter(function(r){return effR.indexOf(r.id)>=0;});
   var list=document.getElementById('al-list');
   list.innerHTML='';
-  REGIONS.forEach(function(r,i){
+  visRegions.forEach(function(r,i){
     var div=document.createElement('div');
     div.className='al-item'+(i===0?' al-active':'');
     div.id='ali-'+r.id;
@@ -1106,7 +1225,7 @@ function renderAlloc(){
     (function(rid){div.onclick=function(){selectAllocRegion(rid);};})(r.id);
     list.appendChild(div);
   });
-  selectAllocRegion(REGIONS[0].id);
+  if(visRegions.length) selectAllocRegion(visRegions[0].id);
 }
 function selectAllocRegion(id){
   document.querySelectorAll('.al-item').forEach(function(e){e.classList.remove('al-active');});
@@ -1173,8 +1292,9 @@ function renderApply(){
 function renderChips(){
   var container=document.getElementById('apply-chips');
   container.innerHTML='';
+  var effR=effectiveRegions();
   REGIONS.forEach(function(r){
-    var can=canSee(r.id);
+    var can=effR.indexOf(r.id)>=0;
     var chip=document.createElement('span');
     chip.className='chip'+(appRegion===r.id?' chip-sel':'')+(can?'':' chip-locked');
     chip.textContent=r.id;
@@ -1290,7 +1410,7 @@ function renderChTable(){
   chRows.forEach(function(row,i){
     var pct=chTotal>0?Math.round(row.amt/chTotal*100):0;
     var tr=document.createElement('tr');
-    var presetOpts='<option value="" disabled>— Preset —</option>'+CHANNELS.map(function(c){return '<option value="'+c+'">'+c+'</option>';}).join('');
+    var presetOpts='<option value="" disabled>— Preset —</option>'+CHANNELS.map(function(ch){return '<option value="'+ch+'">'+ch+'</option>';}).join('');
     tr.innerHTML='<td>'
       +'<div class="ch-name-cell">'
       +'<input class="ch-custom-inp" type="text" value="'+row.ch+'" placeholder="Channel name (custom or preset)" oninput="chRows['+i+'].ch=this.value">'
@@ -1304,8 +1424,10 @@ function renderChTable(){
   });
   updCh();
 }
-function addCh(){
-  chRows.push({ch:'',amt:10000,cur:'USD'});
+function addCh(isNew){
+  chRows.push({ch:'',amt:10000,cur:'USD',isNew:!!isNew,monthly:0});
+  var hint=document.getElementById('new-platform-hint');
+  if(isNew&&hint) hint.style.display='block';
   renderChTable();
   setTimeout(function(){
     var inputs=document.querySelectorAll('#ch-tbody .ch-custom-inp');
@@ -1468,6 +1590,7 @@ function doSubmit(){
     date:new Date().toLocaleDateString('en-AU'),
     status:'Pending',
     applicant:applicant,
+    owner:applicant,
     approver:approver
   });
   CAMPAIGNS.unshift({name:nm,owner:applicant||u.name,region:appRegion,priority:'',type:appType.toUpperCase(),amount:budget,status:'Waiting',start:document.getElementById('f-start').value.replaceAll('-','/'),end:document.getElementById('f-end').value.replaceAll('-','/')});
@@ -1484,23 +1607,35 @@ function doSubmit(){
 // ── REQUESTS ──────────────────────────────────────────────────────────
 function renderReqs(){
   var rFel=document.getElementById('rf-region');
-  if(!isManager()){rFel.value=myRegion();rFel.disabled=true;}
+  var rs=myRegions();
+  if(rs&&rs.length===1){rFel.value=rs[0];rFel.disabled=true;}
   else rFel.disabled=false;
   var rF=rFel.value;
   var tF=document.getElementById('rf-type').value;
   var sF=document.getElementById('rf-status').value;
+  var oF=document.getElementById('rf-owner')?document.getElementById('rf-owner').value:'';
+  var effR=effectiveRegions();
   var data=REQUESTS.filter(function(r){
-    if(!canSee(r.region)) return false;
+    if(effR.indexOf(r.region)<0) return false;
     if(rF&&r.region!==rF) return false;
     if(tF&&r.type.toLowerCase()!==tF.toLowerCase()) return false;
     if(sF&&r.status.toLowerCase()!==sF.toLowerCase()) return false;
+    if(oF&&(r.owner||'')!==oF) return false;
     return true;
   });
   var sub=document.getElementById('br-sub');
-  if(sub) sub.textContent=(isManager()?'All regions':'Region: '+myRegion())+' · '+data.length+' requests';
+  var regionLabel=activeCountryFilter?activeCountryFilter:(rs&&rs.length===1?rs[0]:(rs&&rs.length>1?rs.join('/'):'All regions'));
+  if(sub) sub.textContent=regionLabel+' · '+data.length+' request'+(data.length!==1?'s':'');
   var tbody=document.getElementById('req-tbody');
   tbody.innerHTML=data.length?data.map(function(r){
+    var ownerInitial=(r.owner||'?').charAt(0);
+    var ownerColors={Allysson:'#1a56db',Maxine:'#059669',Carlos:'#d97706',Sarah:'#7c3aed',Mariana:'#dc2626'};
+    var oc=ownerColors[r.owner]||'var(--g400)';
+    var ownerCell='<span style="display:inline-flex;align-items:center;gap:5px">'
+      +'<span style="width:22px;height:22px;border-radius:50%;background:'+oc+';color:#fff;font-size:9px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0">'+ownerInitial+'</span>'
+      +(r.owner||'—')+'</span>';
     return '<tr><td class="td-name" title="'+r.name+'">'+r.name+'</td>'
+      +'<td>'+ownerCell+'</td>'
       +'<td style="font-weight:500">'+r.region+'</td>'
       +'<td>'+r.type+'</td>'
       +'<td style="font-weight:600">'+fmtF(r.total)+'</td>'
@@ -1508,12 +1643,14 @@ function renderReqs(){
       +'<td class="td-muted">'+r.date+'</td>'
       +'<td>'+badge(r.status)+'</td>'
       +'<td><button class="dots-btn">···</button></td></tr>';
-  }).join(''):'<tr><td colspan="8" class="empty">No requests found</td></tr>';
+  }).join(''):'<tr><td colspan="9" class="empty">No requests found</td></tr>';
 }
 function resetReqs(){
   document.getElementById('rf-region').value='';
   document.getElementById('rf-type').value='';
   document.getElementById('rf-status').value='';
+  var oEl=document.getElementById('rf-owner');
+  if(oEl) oEl.value='';
   renderReqs();
 }
 
@@ -1536,6 +1673,10 @@ function createCampaign(){
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────
+updateCountryFilter();
+// show role badge
+var rb=document.getElementById('topbar-role-badge');
+if(rb){rb.textContent=ROLES[currentRole].title;rb.style.display='inline';}
 renderCampaigns();
 </script>
 </body>
